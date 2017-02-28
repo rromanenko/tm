@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = 'Р'
+DISPLAY_BREAKDOWN = ''
 
 def valid_date(s):
     """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
@@ -11,7 +11,7 @@ def valid_date(s):
 
 def valid_time(s):
     """ Checks if string is time record, e.g. 01.55 - 02.10 - Б -
-    If yes, return a tuple with category and length of time in min
+    If yes, returns a tuple with category and length of time in min
     """
     try: 
         start_time = int(s[0:2])*60 + int(s[3:5])
@@ -28,11 +28,18 @@ categories = {}
 while True:
     line = f.readline()
 
-    if line == "\n":
+    if '===' in line: # if end of all day reports
         break
 
+    elif in_date and line == "\n": # if end of one day reports
+        for i in "БИРsХ":
+            if i in categories:
+                print(i, "%2d h %2d min" %(divmod(categories[i],60)))
+        print( "Total:", "%d h %d min" %(divmod(sum(categories.values()),60)) )
+        in_date = False
+
     elif valid_date(line):
-        print(line)
+        print("\n"+line.rstrip())
         in_date = True
         categories = {}
 
@@ -40,17 +47,11 @@ while True:
         temp = valid_time(line) 
 
         if temp[0] == DISPLAY_BREAKDOWN:
-            print(line)
+            print(line.rstrip())
 
         if temp[0] in categories:
             categories[temp[0]] += temp[1]
         else:
             categories[temp[0]] = temp[1]
-
-for i in "БИРsХ":
-    if i in categories:
-        print(i, "%2d h %2d min" %(divmod(categories[i],60)))
-
-print( "Total:", "%d h %d min" %(divmod(sum(categories.values()),60)) )
         
 f.close()
