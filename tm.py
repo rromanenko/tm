@@ -28,22 +28,22 @@ categories = {}
 while True:
     line = f.readline()
 
-    if '===' in line: # if end of all day reports
+    if '===' in line: # if end of all reports
         break
 
-    elif in_date and line == "\n": # if end of one day reports
+    elif in_date and line == "\n": # if end of report for one day
         for i in "БИРsХ":
             if i in categories:
                 print(i, "%2d h %2d min" %(divmod(categories[i],60)))
         print( "Total:", "%d h %d min" %(divmod(sum(categories.values()),60)) )
         in_date = False
 
-    elif valid_date(line):
-        print("\n"+line.rstrip())
+    elif valid_date(line): # if it's a start of a day
+        print("\n"+line)
         in_date = True
         categories = {}
 
-    elif in_date and valid_time(line):
+    elif in_date and valid_time(line): # if we are inside a date
         temp = valid_time(line) 
 
         if temp[0] == DISPLAY_BREAKDOWN:
