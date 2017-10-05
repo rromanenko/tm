@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = '' # if you want to display some category
+DISPLAY_BREAKDOWN = 'Х' # if you want to display some category
 
 def valid_date(s):
     """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
@@ -36,7 +36,21 @@ while True:
             if i in categories:
                 print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
                 print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
-        print( "Total:", "%d h %d min" %(divmod(sum(categories.values()),60)) )
+
+        # if total is not "24 h 0 min", then print Total in different color
+        W  = '\033[0m'  # white (normal)
+        R  = '\033[31m' # red
+        G  = '\033[32m' # green
+        O  = '\033[33m' # orange
+        B  = '\033[34m' # blue
+        P  = '\033[35m' # purple
+        
+        (hours, minutes) = divmod(sum(categories.values()),60)
+        if (hours, minutes) == (24, 0):
+            color = W
+        else:
+            color = R
+        print( color+"Total:", "%d h %d min" %(hours, minutes) )
         in_date = False
 
     elif valid_date(line): # if it's a start of a day
