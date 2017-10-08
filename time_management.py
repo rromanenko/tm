@@ -2,6 +2,13 @@
 
 DISPLAY_BREAKDOWN = 'Х' # if you want to display some category
 
+W  = '\033[0m'  # white (normal)
+R  = '\033[31m' # red
+G  = '\033[32m' # green
+O  = '\033[33m' # orange
+B  = '\033[34m' # blue
+P  = '\033[35m' # purple
+
 def valid_date(s):
     """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
     if "DAY" in s:
@@ -28,37 +35,15 @@ categories = {}
 while True:
     line = f.readline()
 
-    if '===' in line: # if end of all reports
+    if '===' in line: # if end of all daily reports
         break
 
-    elif in_date and line == "\n": # if end of report for one day
-        for i in "БИРsХ":
-            if i in categories:
-                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
-                print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
-
-        # if total is not "24 h 0 min", then print Total in different color
-        W  = '\033[0m'  # white (normal)
-        R  = '\033[31m' # red
-        G  = '\033[32m' # green
-        O  = '\033[33m' # orange
-        B  = '\033[34m' # blue
-        P  = '\033[35m' # purple
-        
-        (hours, minutes) = divmod(sum(categories.values()),60)
-        if (hours, minutes) == (24, 0):
-            color = W
-        else:
-            color = R
-        print( color+"Total:", "%d h %d min" %(hours, minutes) )
-        in_date = False
-
     elif valid_date(line): # if it's a start of a day
-        print("\n"+line)
+        print("\n"+B+line+W)
         in_date = True
         categories = {}
 
-    elif in_date and valid_time(line): # if we are inside a date
+    elif in_date and valid_time(line): # if we are inside a date and line is a line with time
         temp = valid_time(line) 
 
         if temp[0] == DISPLAY_BREAKDOWN:
@@ -68,5 +53,21 @@ while True:
             categories[temp[0]] += temp[1]
         else:
             categories[temp[0]] = temp[1]
+
+    elif in_date and line == "\n": # if end of report for one day
+        for i in "БИРsХ":
+            if i in categories:
+                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
+                print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
+
+        # if total is not "24 h 0 min", then print Total in different color
+        
+        (hours, minutes) = divmod(sum(categories.values()),60)
+        if (hours, minutes) == (24, 0):
+            color = G
+        else:
+            color = R
+        print( color+"Total:", "%d h %d min" %(hours, minutes), W )
+        in_date = False
         
 f.close()
