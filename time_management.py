@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = 'Х' # if you want to display some category
+DISPLAY_BREAKDOWN = '' # if you want to display some category
 
 W  = '\033[0m'  # white (normal)
 R  = '\033[31m' # red
@@ -13,11 +13,10 @@ def valid_date(s):
     """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
     if "DAY" in s:
         return s
-    else:
-        return ""
+    return ""
 
 def valid_time(s):
-    """ Checks if string is time record, e.g. 01.55 - 02.10 - Б -
+    """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
     If yes, returns a tuple with category and length of time in min
     """
     try: 
@@ -30,7 +29,7 @@ def valid_time(s):
 
 f = open("/Volumes/untitled/План работы.txt", "r",encoding="cp1251")
 in_date = False
-categories = {}
+#categories = {}
 
 while True:
     line = f.readline()
@@ -41,10 +40,20 @@ while True:
     elif valid_date(line): # if it's a start of a day
         print("\n"+B+line+W)
         in_date = True
+        prev_time = ""
         categories = {}
 
     elif in_date and valid_time(line): # if we are inside a date and line is a line with time
         temp = valid_time(line) 
+
+        # check for not 24h00 error. If not
+        # xx.xx- xx.15
+        # xx.15 - xx.xx
+        # print the line
+        if prev_time != "" and line[3:5] != prev_time:
+            color = R
+            print(color+line, W)
+        prev_time = line[11:13]
 
         if temp[0] == DISPLAY_BREAKDOWN:
             print(line.rstrip())
@@ -61,7 +70,6 @@ while True:
                 print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
 
         # if total is not "24 h 0 min", then print Total in different color
-        
         (hours, minutes) = divmod(sum(categories.values()),60)
         if (hours, minutes) == (24, 0):
             color = G
