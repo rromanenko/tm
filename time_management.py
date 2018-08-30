@@ -1,6 +1,6 @@
  #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = '' # if you want to display some category
+DISPLAY_BREAKDOWN = 'Х' # if you want to display some category
 
 W  = '\033[0m'  # white (normal)
 R  = '\033[31m' # red
@@ -9,11 +9,9 @@ O  = '\033[33m' # orange
 B  = '\033[34m' # blue
 P  = '\033[35m' # purple
 
-def valid_date(s):
-    """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
-    if "DAY" in s:
-        return s
-    return ""
+#def valid_date(s):
+#    """ Checks if string is the beginning of the day, e.g. 27.02.2017, THURSDAY"""
+#    return "DAY" in s
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -37,7 +35,7 @@ while True:
     if '===' in line: # if end of all daily reports
         break
 
-    elif valid_date(line): # if it's a start of a day
+    elif "DAY" in line: # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
         print("\n"+B+line+W)
         in_date = True
         prev_time = ""
@@ -66,7 +64,7 @@ while True:
     elif in_date and line == "\n": # if end of report for one day
         for i in "БИРsХ":
             if i in categories:
-                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
+#                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
                 print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
 
         # if total is not "24 h 0 min", then print Total in different color
