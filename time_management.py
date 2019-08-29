@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
-#DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
+DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
 
