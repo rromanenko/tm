@@ -39,7 +39,7 @@ while True:
         break
 
     elif "kcal" in line: # if there's a number of eaten calories in the line
-        line = line.rstrip().split(" ")
+        line = line.rstrip().replace(".", " ").split()
         total_cal += [int(line[line.index('kcal')-1] )]
 
     elif "DAY" in line: # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
@@ -87,8 +87,8 @@ while True:
         else:
             color = R
         print( color+"Total:", "%d h %d min" %(hours, minutes), W )
-        color = P
-        print(color+"Calories for the day:", total_cal, sum(total_cal))
+        #color = P
+        #print(color+"Calories for the day:", total_cal, sum(total_cal))
         in_date = False
         
 f.close()

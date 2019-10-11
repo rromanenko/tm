@@ -1,0 +1,11 @@
+{% if name %}
+    Hello, {{ name|title }}!
+{% else %}
+    Hello, Stranger!
+{% endif %}
+
+<ul>
+    {% for i in name %}
+        <li>{{ i }}</li>
+    {% endfor %}
+</ul>
