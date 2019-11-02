@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-#DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
-DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
+DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
 
@@ -14,6 +14,8 @@ P  = '\033[35m' # purple
 
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
+
+metrics = ["Lean Software Development", "myself", "back exercises"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -35,12 +37,12 @@ in_date = False
 while True:
     line = f.readline()
 
+    for metric in metrics:
+        if metric in line:
+            metrics[metric] +=1
+
     if '=====' in line: # if end of all daily reports
         break
-
-    elif "kcal" in line: # if there's a number of eaten calories in the line
-        line = line.rstrip().replace(".", " ").split()
-        total_cal += [int(line[line.index('kcal')-1] )]
 
     elif "DAY" in line: # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
         print("\n"+B+line+W)
@@ -48,6 +50,11 @@ while True:
         prev_time = ""
         categories = {}
         total_cal = []
+        metrics = { i: 0 for i in metrics }
+
+    elif "kcal" in line: # if there's a number of eaten calories in the line
+        line = line.rstrip().replace(".", " ").split()
+        total_cal += [int(line[line.index('kcal')-1] )]
 
     elif in_date and valid_time(line): # if we are inside a date and line is a line with time
         category, duration = valid_time(line)
@@ -87,7 +94,8 @@ while True:
         else:
             color = R
         print( color+"Total:", "%d h %d min" %(hours, minutes), W )
-        #color = P
+        color = P
+        print(color+"Metrics: ",metrics)
         #print(color+"Calories for the day:", total_cal, sum(total_cal))
         in_date = False
         
