@@ -95,7 +95,7 @@ while True:
             color = R
         print( color+"Total:", "%d h %d min" %(hours, minutes), W )
         color = P
-        print(color+"Metrics: ",metrics)
+        print(color+"Metrics: ", metrics)
         #print(color+"Calories for the day:", total_cal, sum(total_cal))
         in_date = False
         
