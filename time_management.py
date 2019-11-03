@@ -15,7 +15,7 @@ P  = '\033[35m' # purple
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
 
-metrics = ["Lean Software Development", "myself", "back exercises"]
+metrics = ["Lean Software Development", "myself", "exercises"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
