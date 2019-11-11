@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
-#DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
+DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
 
@@ -15,7 +15,7 @@ P  = '\033[35m' # purple
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
 
-metrics = ["Lean Software Development", "myself", "exercises"]
+metrics_list = ["lean software", "myself", "back exercises", "palming"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -37,9 +37,9 @@ in_date = False
 while True:
     line = f.readline()
 
-    for metric in metrics:
-        if metric in line:
-            metrics[metric] +=1
+    for metric in metrics_list:
+        if metric in line.lower():
+            metrics[metric] += line.lower().count(metric)
 
     if '=====' in line: # if end of all daily reports
         break
@@ -50,7 +50,7 @@ while True:
         prev_time = ""
         categories = {}
         total_cal = []
-        metrics = { i: 0 for i in metrics }
+        metrics = { i: 0 for i in metrics_list }
 
     elif "kcal" in line: # if there's a number of eaten calories in the line
         line = line.rstrip().replace(".", " ").split()
