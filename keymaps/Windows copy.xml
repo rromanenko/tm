@@ -1,0 +1,6 @@
+<keymap version="1" name="Windows copy" parent="$default">
+  <action id="Run">
+    <keyboard-shortcut first-keystroke="shift f10" />
+    <keyboard-shortcut first-keystroke="alt r" />
+  </action>
+</keymap>
