@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 #DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
-DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
-#DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
+DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
 
 W  = '\033[0m'  # white (normal)
@@ -10,12 +10,12 @@ R  = '\033[31m' # red
 G  = '\033[32m' # green
 O  = '\033[33m' # orange
 B  = '\033[34m' # blue
-P  = '\033[35m' # purple
+P  = '\033[35m' # purpler
 
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
 
-metrics_list = ["lean software", "myself", "back exercises", "palming"]
+metrics_list = ["touched myself", "push-up", "pull-up", "cardio", "yoga", "abs"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -100,3 +100,4 @@ while True:
         in_date = False
         
 f.close()
+
