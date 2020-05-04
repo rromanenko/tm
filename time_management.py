@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-#DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
+DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
-DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
-#DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'H' # if you want to display some category
 
 W  = '\033[0m'  # white (normal)
 R  = '\033[31m' # red
@@ -31,7 +31,13 @@ def valid_time(s):
     except ValueError:
         return ()
 
-f = open("/Volumes/untitled/План работы.txt", "r", encoding="cp1251")
+try:
+    path = "/Volumes/untitled/План работы.txt"
+    f = open(path, "r", encoding="cp1251")
+except FileNotFoundError:
+    print("File %s not found!" %(path))
+    exit()
+
 in_date = False
 
 while True:
