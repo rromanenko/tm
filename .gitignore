@@ -1,2 +1,6 @@
+/_windows
+/codestyles
+/inspection
+*.xml
 *.txt
 .DS_Store
