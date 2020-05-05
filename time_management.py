@@ -3,14 +3,14 @@
 DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
-#DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'H' # if you want to display some category
 
 W  = '\033[0m'  # white (normal)
 R  = '\033[31m' # red
 G  = '\033[32m' # green
 O  = '\033[33m' # orange
 B  = '\033[34m' # blue
-P  = '\033[35m' # purple
+P  = '\033[35m' # purpler
 
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
@@ -33,9 +33,15 @@ def valid_time(s):
 
 #try to open
 try:
-    f = open("/Volumes/untitled/План работы.txt", "r", encoding="cp1251")
-except:
-    f = open("C:\Мои документы\План работы.txt", "r", encoding="cp1251")
+    path = "/Volumes/untitled/План работы.txt"
+    f = open(path, "r", encoding="cp1251")
+except FileNotFoundError:
+    try:
+        path = "C:\Мои документы\План работы.txt"
+        f = open(path, "r", encoding="cp1251")
+    except FileNotFoundError:
+        print("File План работы not found!")
+        exit()
 
 in_date = False
 
@@ -105,3 +111,4 @@ while True:
         in_date = False
         
 f.close()
+
