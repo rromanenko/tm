@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-#DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
-DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
+DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
+#DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'Р' # if you want to display some category
 
@@ -15,7 +15,7 @@ P  = '\033[35m' # purple
 cat_ru = "БИРsХ"
 cat_en = "BIDsN"
 
-metrics_list = ["lean software", "myself", "back exercises", "palming"]
+metrics_list = ["touched myself", "push-up", "pull-up", "cardio", "yoga", "abs"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -31,7 +31,12 @@ def valid_time(s):
     except ValueError:
         return ()
 
-f = open("/Volumes/untitled/План работы.txt", "r", encoding="cp1251")
+#try to open
+try:
+    f = open("/Volumes/untitled/План работы.txt", "r", encoding="cp1251")
+except:
+    f = open("C:\Мои документы\План работы.txt", "r", encoding="cp1251")
+
 in_date = False
 
 while True:
