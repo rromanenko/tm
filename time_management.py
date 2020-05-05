@@ -12,7 +12,7 @@ O  = '\033[33m' # orange
 B  = '\033[34m' # blue
 P  = '\033[35m' # purpler
 
-cat_ru = "БИРsХ"
+cat_ru = "БИРсХ"
 cat_en = "BIDsN"
 
 metrics_list = ["touched myself", "push-up", "pull-up", "cardio", "yoga", "abs"]
@@ -31,7 +31,8 @@ def valid_time(s):
     except ValueError:
         return ()
 
-#try to open
+#try to open the time management file
+#check if we are on Mac or Windows
 try:
     path = "/Volumes/untitled/План работы.txt"
     f = open(path, "r", encoding="cp1251")
@@ -111,4 +112,3 @@ while True:
         in_date = False
         
 f.close()
-
