@@ -5,12 +5,12 @@ DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'H' # if you want to display some category
 
-White  = '\033[0m'  # white (normal)
-Red  = '\033[31m' # red
-Green  = '\033[32m' # green
-Orange  = '\033[33m' # orange
-Blue  = '\033[34m' # blue
-Purple  = '\033[35m' # purple
+White  = '\033[0m'
+Red  = '\033[31m'
+Green  = '\033[32m'
+Orange  = '\033[33m'
+Blue  = '\033[34m'
+Purple  = '\033[35m'
 
 cat_ru = "БИРсХ"
 cat_en = "BIDsN"
@@ -99,7 +99,7 @@ while True:
     # if end of report for one day, print time for each category
     elif in_date and line == "\n":
         for i in cat_ru:
-            print( round(categories.get(i,0) // 60 + categories.get(i,0) % 60 / 60, 4))
+            print( round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
 #            print(i, "%2d h %2d min " %(divmod(categories.get(i,0),60)))
 
         # if total is not "24 h 0 min", then print Total in different color
@@ -108,6 +108,7 @@ while True:
             print( Green + "Total:", "%d h %d min" %(hours, minutes), White )
         else:
             print( Red + "Total:", "%d h %d min" %(hours, minutes), White )
+
         print( Purple + "Metrics: ", metrics )
         #print(Purple+"Calories for the day:", total_cal, sum(total_cal))
         in_date = False
