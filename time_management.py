@@ -12,7 +12,7 @@ O  = '\033[33m' # orange
 B  = '\033[34m' # blue
 P  = '\033[35m' # purpler
 
-cat_ru = "БИРsХ"
+cat_ru = "БИРсХ"
 cat_en = "BIDsN"
 
 metrics_list = ["touched myself", "push-up", "pull-up", "cardio", "yoga", "abs"]
@@ -86,7 +86,7 @@ while True:
             categories[category] = duration
 
     elif in_date and line == "\n": # if end of report for one day
-        for i in "БИРsХ":
+        for i in "БИРсХ":
             if i in categories:
 #                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
                 print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
