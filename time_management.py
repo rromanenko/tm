@@ -15,7 +15,7 @@ P  = '\033[35m' # purpler
 cat_ru = "БИРсХ"
 cat_en = "BIDsN"
 
-metrics_list = ["touched myself", "push-up", "pull-up", "cardio", "yoga", "abs"]
+metrics_list = ["touched myself", "push-up", "pull-up", "yoga"]
 
 def valid_time(s):
     """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
@@ -53,10 +53,12 @@ while True:
         if metric in line.lower():
             metrics[metric] += line.lower().count(metric)
 
-    if '=====' in line: # if end of all daily reports
+    # if end of all daily reports
+    if '=====' in line:
         break
 
-    elif "DAY" in line: # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
+    # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
+    elif "DAY" in line:
         print("\n"+B+line+W)
         in_date = True
         prev_time = ""
@@ -64,11 +66,13 @@ while True:
         total_cal = []
         metrics = { i: 0 for i in metrics_list }
 
-    elif "kcal" in line: # if there's a number of eaten calories in the line
+    # if there's a number of eaten calories in the line
+    elif "kcal" in line:
         line = line.rstrip().replace(".", " ").split()
         total_cal += [int(line[line.index('kcal')-1] )]
 
-    elif in_date and valid_time(line): # if we are inside a date and line is a line with time
+    # if we are inside a date and line is a line with time
+    elif in_date and valid_time(line):
         category, duration = valid_time(line)
 
         # check for not 24h00 error. If not
@@ -91,13 +95,11 @@ while True:
         else:
             categories[category] = duration
 
-    elif in_date and line == "\n": # if end of report for one day
-        for i in "БИРsХ":
-            if i in categories:
-#                print(i, "%2d h %2d min / " %(divmod(categories[i],60)), end="")
-                print( round(categories[i] // 60 + categories[i] % 60 / 60, 4))
-            else:
-                print(0)
+    # if end of report for one day, print time for each category
+    elif in_date and line == "\n":
+        for i in cat_ru:
+            print( round(categories.get(i,0) // 60 + categories.get(i,0) % 60 / 60, 4))
+#            print(i, "%2d h %2d min " %(divmod(categories.get(i,0),60)))
 
         # if total is not "24 h 0 min", then print Total in different color
         (hours, minutes) = divmod(sum(categories.values()),60)
