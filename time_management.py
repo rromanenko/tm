@@ -5,12 +5,12 @@ DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'H' # if you want to display some category
 
-W  = '\033[0m'  # white (normal)
-R  = '\033[31m' # red
-G  = '\033[32m' # green
-O  = '\033[33m' # orange
-B  = '\033[34m' # blue
-P  = '\033[35m' # purpler
+White  = '\033[0m'  # white (normal)
+Red  = '\033[31m' # red
+Green  = '\033[32m' # green
+Orange  = '\033[33m' # orange
+Blue  = '\033[34m' # blue
+Purple  = '\033[35m' # purple
 
 cat_ru = "БИРсХ"
 cat_en = "BIDsN"
@@ -31,8 +31,7 @@ def valid_time(s):
     except ValueError:
         return ()
 
-#try to open the time management file
-#check if we are on Mac or Windows
+#try to open the time management file, first on Mac, then on Windows
 try:
     path = "/Volumes/untitled/План работы.txt"
     f = open(path, "r", encoding="cp1251")
@@ -59,7 +58,7 @@ while True:
 
     # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
     elif "DAY" in line:
-        print("\n"+B+line+W)
+        print("\n"+Blue+line+White)
         in_date = True
         prev_time = ""
         categories = {}
@@ -80,8 +79,8 @@ while True:
         # xx.15 - xx.xx
         # print the line
         if prev_time != "" and line[3:5] != prev_time:
-            color = R
-            print(color+line, W)
+            color = Red
+            print(color+line, White)
         prev_time = line[11:13]
 
         if category in cat_en:
@@ -90,10 +89,12 @@ while True:
         if category in DISPLAY_BREAKDOWN:
             print(line.rstrip())
 
-        if category in categories:
-            categories[category] += duration
-        else:
-            categories[category] = duration
+        # if category in categories:
+        #     categories[category] += duration
+        # else:
+        #     categories[category] = duration
+        categories.setdefault(category, 0)
+        categories[category] += duration
 
     # if end of report for one day, print time for each category
     elif in_date and line == "\n":
@@ -104,13 +105,11 @@ while True:
         # if total is not "24 h 0 min", then print Total in different color
         (hours, minutes) = divmod(sum(categories.values()),60)
         if (hours, minutes) == (24, 0):
-            color = G
+            print( Green + "Total:", "%d h %d min" %(hours, minutes), White )
         else:
-            color = R
-        print( color+"Total:", "%d h %d min" %(hours, minutes), W )
-        color = P
-        print(color+"Metrics: ", metrics)
-        #print(color+"Calories for the day:", total_cal, sum(total_cal))
+            print( Red + "Total:", "%d h %d min" %(hours, minutes), White )
+        print( Purple + "Metrics: ", metrics )
+        #print(Purple+"Calories for the day:", total_cal, sum(total_cal))
         in_date = False
         
 f.close()
