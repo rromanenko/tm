@@ -1,6 +1,8 @@
 /_windows
 /codestyles
 /inspection
-*.xml
-*.txt
+/templates
 .DS_Store
+.idea
+*.txt
+*.xml
