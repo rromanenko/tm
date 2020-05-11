@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
+import pyperclip
+
 DISPLAY_BREAKDOWN = 'ХN' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'BБ' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'ИI' # if you want to display some category
 #DISPLAY_BREAKDOWN = 'H' # if you want to display some category
 
-White  = '\033[0m'
-Red  = '\033[31m'
-Green  = '\033[32m'
+White   = '\033[0m'
+Red     = '\033[31m'
+Green   = '\033[32m'
 Orange  = '\033[33m'
-Blue  = '\033[34m'
+Blue    = '\033[34m'
 Purple  = '\033[35m'
 
 cat_ru = "БИРсХ"
@@ -53,7 +55,7 @@ while True:
             metrics[metric] += line.lower().count(metric)
 
     # if end of all daily reports
-    if '=====' in line:
+    if line.startswith('====='):
         break
 
     # if it's a start of a day, e.g. 27.02.2017, THURSDAY"""
@@ -98,16 +100,18 @@ while True:
 
     # if end of report for one day, print time for each category
     elif in_date and line == "\n":
-        for i in cat_ru:
-            print( round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
-#            print(i, "%2d h %2d min " %(divmod(categories.get(i,0),60)))
+        daily_results = "\n".join([str( round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4) ) for i in cat_ru])
+        print(daily_results)
+
+        # saving daily results for each category into computer clipboard
+        pyperclip.copy(daily_results)
 
         # if total is not "24 h 0 min", then print Total in different color
         (hours, minutes) = divmod(sum(categories.values()),60)
         if (hours, minutes) == (24, 0):
-            print( Green + "Total:", "%d h %d min" %(hours, minutes), White )
+            print( Green + "Total:", f"{hours} h", White )
         else:
-            print( Red + "Total:", "%d h %d min" %(hours, minutes), White )
+            print( Red + "Total:", f"{hours} h {minutes} min", White )
 
         print( Purple + "Metrics: ", metrics )
         #print(Purple+"Calories for the day:", total_cal, sum(total_cal))
