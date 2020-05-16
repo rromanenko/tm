@@ -1,2 +1,8 @@
-*.txt
+/_windows
+/codestyles
+/inspection
+/templates
 .DS_Store
+.idea
+*.txt
+*.xml
