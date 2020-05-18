@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pyperclip
+import re
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -22,17 +23,14 @@ metrics_list = ["touched myself", "push-up", "pull-up", "yoga", "eye exercise"]
 
 
 def valid_time(s):
-    """ Checks if string is a time record, e.g. 01.55 - 02.10 - Б -
+    """ Checks if string is a time record with a category, e.g. 01.55 - 02.10 - Б -
     If yes, returns a tuple with category and length of time in min
     """
-    try:
-        start_time = int(s[0:2])*60 + int(s[3:5])
-        end_time = int(s[8:10])*60 + int(s[11:13])
-        category = s[16:17]
-        if category in (cat_en + cat_ru):
-            return category, end_time - start_time
-        return ()
-    except ValueError:
+    mo = re.compile(rf'^(\d\d).(\d\d) - (\d\d).(\d\d) - ([{cat_en+cat_ru}])').search(s)
+    if mo:
+        start_hour, start_min, end_hour, end_min, category = mo.groups()
+        return category, int(end_hour) * 60 + int(end_min) - int(start_hour) * 60 - int(start_min)
+    else:
         return ()
 
 
