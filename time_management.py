@@ -104,10 +104,11 @@ while True:
         print(daily_results)
 
         # saving daily results for each category into computer clipboard
-        # TODO: Make it that only the first dayly result is saved
-        #   Check if pyperclip.paste() already contains data similar to daily results if so, don't save anything.
-        #   Use regexp to determine if daily result already contains data
-        pyperclip.copy(daily_results)
+        # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
+        # len(cat_ru) - 1 because last item doesn't have \n ['0.3333\n', '3.0\n', '7.0\n', '6.5\n', '6.4167\n']
+        mo = re.compile(r'\d+.\d+\n').findall(pyperclip.paste())
+        if not mo or len(mo) != len(cat_ru) - 1:
+            pyperclip.copy(daily_results)
 
         # if total is not "24 h 0 min", then print Total in different color
         (hours, minutes) = divmod(sum(categories.values()), 60)
