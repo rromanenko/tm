@@ -2,6 +2,7 @@
 
 import pyperclip
 import re
+import sys
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -16,10 +17,10 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-cat_ru = "БИРсХ"
-cat_en = "BIDsN"
+cat_ru = "БКИРсХ"
+cat_en = "BCIDsN"
 
-metrics_list = ["touched myself", "push-up", "pull-up", "yoga", "eye exercise"]
+metrics_list = ["touched myself", "push-up", "pull-up", "yoga"]
 
 
 def valid_time(s):
@@ -34,17 +35,16 @@ def valid_time(s):
         return ()
 
 
-# try to open the time management file, first on Mac, then on Windows
-try:
+# Windows sys.platform is "win32"
+path = "C:/Мои документы/План работы.txt"
+if sys.platform == "darwin":
     path = "/Volumes/untitled/План работы.txt"
+
+try:
     f = open(path, "r", encoding="cp1251")
 except FileNotFoundError:
-    try:
-        path = "C:\Мои документы\План работы.txt"
-        f = open(path, "r", encoding="cp1251")
-    except FileNotFoundError:
-        print("File План работы not found!")
-        exit()
+    print(f"File План работы at {path} not found!")
+    exit()
 
 in_date = False
 
@@ -104,6 +104,9 @@ while True:
         print(daily_results)
 
         # saving daily results for each category into computer clipboard
+        # TODO: Make it that only the first dayly result is saved
+        #   Check if pyperclip.paste() already contains data similar to daily results if so, don't save anything.
+        #   Use regexp to determine if daily result already contains data
         pyperclip.copy(daily_results)
 
         # if total is not "24 h 0 min", then print Total in different color
