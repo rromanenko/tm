@@ -105,9 +105,8 @@ while True:
 
         # saving daily results for each category into computer clipboard
         # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
-        # len(cat_ru) - 1 because last item doesn't have \n ['0.3333\n', '3.0\n', '7.0\n', '6.5\n', '6.4167\n']
-        mo = re.compile(r'\d+.\d+\n').findall(pyperclip.paste())
-        if not mo or len(mo) != len(cat_ru) - 1:
+        mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+        if not mo or len(mo) != len(cat_ru):
             pyperclip.copy(daily_results)
 
         # if total is not "24 h 0 min", then print Total in different color
