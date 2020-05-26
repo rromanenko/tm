@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import pprint
+# import pprint
 import pyperclip
 import re
 import sys
