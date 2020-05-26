@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# import pprint
+import pprint
 import pyperclip
 import re
 import sys
@@ -138,8 +138,8 @@ if __name__ == "__main__":
             else:
                 print(Red + "Total:", f"{hours} h {minutes} min", White)
 
-            # pprint.pprint(secondary_categories)
-            print(Purple + "Metrics: ", metrics)
+            print(Purple + "Metrics: ", metrics, White)
+            pprint.pprint(secondary_categories)
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
 
