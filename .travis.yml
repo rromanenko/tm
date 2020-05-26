@@ -1,5 +1,7 @@
 language: python
 python:
   - "3.6"
+install:
+  - pip install pyperclip
 script:
   - python -m tm_unittests
