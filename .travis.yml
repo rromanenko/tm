@@ -4,5 +4,5 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - python -m unittest
-  - pytest unittest_pytest
+  - python -m tm_unittest
+  - pytest tm_unittest_pytest.py
