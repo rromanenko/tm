@@ -4,5 +4,4 @@
 /templates
 .DS_Store
 .idea
-*.txt
 *.xml
