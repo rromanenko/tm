@@ -51,94 +51,96 @@ def valid_secondary_category(s):
         return ()
 
 
-# Windows sys.platform is "win32"
-path = "C:/Мои документы/План работы.txt"
-if sys.platform == "darwin":
-    path = "/Volumes/untitled/План работы.txt"
+if __name__ == "__main__":
 
-try:
-    f = open(path, "r", encoding="cp1251")
-except FileNotFoundError:
-    print(f"File План работы at {path} not found!")
-    exit()
+    # Windows sys.platform is "win32"
+    path = "C:/Мои документы/План работы.txt"
+    if sys.platform == "darwin":
+        path = "/Volumes/untitled/План работы.txt"
 
-while True:
-    line = f.readline()
+    try:
+        f = open(path, "r", encoding="cp1251")
+    except FileNotFoundError:
+        print(f"File План работы at {path} not found!")
+        exit()
 
-    # if end of all daily reports
-    if line.startswith('====='):
-        break
+    while True:
+        line = f.readline()
 
-    # if the line starts with something like "27.02.2017,", it's a start of a new day
-    elif re.compile(rf'^\d\d.\d\d.\d\d\d\d,').search(line):
-        print("\n" + Blue + line + White, end="")
-        in_date = True
-        prev_time = ""
-        categories = {}
-        secondary_categories = {}
-        total_cal = []
-        metrics = {i: 0 for i in metrics_list}
+        # if end of all daily reports
+        if line.startswith('====='):
+            break
 
-    # if there's a number of eaten calories in the line
-    elif "kcal" in line:
-        line = line.rstrip().replace(".", " ").split()
-        total_cal += [int(line[line.index('kcal') - 1])]
+        # if the line starts with something like "27.02.2017,", it's a start of a new day
+        elif re.compile(rf'^\d\d.\d\d.\d\d\d\d,').search(line):
+            print("\n" + Blue + line + White, end="")
+            in_date = True
+            prev_time = ""
+            categories = {}
+            secondary_categories = {}
+            total_cal = []
+            metrics = {i: 0 for i in metrics_list}
 
-    # if we are inside a day and line is a line with time
-    elif in_date and valid_time(line):
-        category, duration = valid_time(line)
+        # if there's a number of eaten calories in the line
+        elif "kcal" in line:
+            line = line.rstrip().replace(".", " ").split()
+            total_cal += [int(line[line.index('kcal') - 1])]
 
-        # check for not 24 h error. If times of adjacent activities don't match, i.e. it's not
-        # xx.xx - xx.15
-        # xx.15 - xx.xx
-        # print the line
-        if prev_time != "" and line[3:5] != prev_time:
-            print(Red + line, White)
-        prev_time = line[11:13]
+        # if we are inside a day and line is a line with time
+        elif in_date and valid_time(line):
+            category, duration = valid_time(line)
 
-        if category in DISPLAY_BREAKDOWN:
-            print(line.rstrip())
+            # check for not 24 h error. If times of adjacent activities don't match, i.e. it's not
+            # xx.xx - xx.15
+            # xx.15 - xx.xx
+            # print the line
+            if prev_time != "" and line[3:5] != prev_time:
+                print(Red + line, White)
+            prev_time = line[11:13]
 
-        # check if category is already added to categories dict, if not, create it and add duration as 0
-        # then increase its duration
-        categories.setdefault(category, 0)
-        categories[category] += duration
+            if category in DISPLAY_BREAKDOWN:
+                print(line.rstrip())
 
-        if valid_secondary_category(line):
-            # print(valid_secondary_category(line))
-            second_cat, second_cat_duration = valid_secondary_category(line)
-            secondary_categories.setdefault(second_cat, 0)
-            secondary_categories[second_cat] += second_cat_duration
+            # check if category is already added to categories dict, if not, create it and add duration as 0
+            # then increase its duration
+            categories.setdefault(category, 0)
+            categories[category] += duration
 
-    # if we are inside a day, check lines for metrics you want to track
-    elif in_date and line != '\n':
-        for metrics_tuple in metrics_list:
-            for metric in metrics_tuple:
-                if metric in line.lower():
-                    metrics[metrics_tuple] += line.lower().count(metric)
+            if valid_secondary_category(line):
+                # print(valid_secondary_category(line))
+                second_cat, second_cat_duration = valid_secondary_category(line)
+                secondary_categories.setdefault(second_cat, 0)
+                secondary_categories[second_cat] += second_cat_duration
 
-    # if end of report for one day, print time for each category
-    elif in_date and line == "\n":
-        daily_results = "\n" + "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
-                                          for i in cat_ru])
-        print(daily_results)
+        # if we are inside a day, check lines for metrics you want to track
+        elif in_date and line != '\n':
+            for metrics_tuple in metrics_list:
+                for metric in metrics_tuple:
+                    if metric in line.lower():
+                        metrics[metrics_tuple] += line.lower().count(metric)
 
-        # saving daily results for each category into computer clipboard
-        # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
-        mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-        if not mo or len(mo) != len(cat_ru):
-            pyperclip.copy(daily_results)
+        # if end of report for one day, print time for each category
+        elif in_date and line == "\n":
+            daily_results = "\n" + "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
+                                              for i in cat_ru])
+            print(daily_results)
 
-        # if total is not "24 h 0 min", then print Total in different color
-        (hours, minutes) = divmod(sum(categories.values()), 60)
-        if (hours, minutes) == (24, 0):
-            print(Green + "Total:", f"{hours} h", White)
-        else:
-            print(Red + "Total:", f"{hours} h {minutes} min", White)
+            # saving daily results for each category into computer clipboard
+            # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
+            mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+            if not mo or len(mo) != len(cat_ru):
+                pyperclip.copy(daily_results)
 
-        # pprint.pprint(secondary_categories)
-        print(Purple + "Metrics: ", metrics)
-        # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
-        in_date = False
+            # if total is not "24 h 0 min", then print Total in different color
+            (hours, minutes) = divmod(sum(categories.values()), 60)
+            if (hours, minutes) == (24, 0):
+                print(Green + "Total:", f"{hours} h", White)
+            else:
+                print(Red + "Total:", f"{hours} h {minutes} min", White)
 
-f.close()
+            # pprint.pprint(secondary_categories)
+            print(Purple + "Metrics: ", metrics)
+            # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
+            in_date = False
+
+    f.close()
