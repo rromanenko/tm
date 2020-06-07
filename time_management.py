@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import pprint
 import pyperclip
 import re
 import sys
@@ -18,8 +17,8 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-cat_ru = "БКИРсХ"
-cat_en = "BCIDsN"
+cat_ru = "БИРсХ"
+cat_en = "BIDsN"
 
 metrics_list = [("touched myself",), ("push-up", "pull-up", "yoga")]
 
@@ -64,8 +63,17 @@ if __name__ == "__main__":
         print(f"File План работы at {path} not found!")
         exit()
 
+    in_date = False
+
     while True:
         line = f.readline()
+
+        # if we are inside a day, check lines for metrics you want to track
+        if in_date and line != '\n':
+            for metrics_tuple in metrics_list:
+                for metric in metrics_tuple:
+                    if metric in line.lower():
+                        metrics[metrics_tuple] += line.lower().count(metric)
 
         # if end of all daily reports
         if line.startswith('====='):
@@ -107,23 +115,15 @@ if __name__ == "__main__":
             categories[category] += duration
 
             if valid_secondary_category(line):
-                # print(valid_secondary_category(line))
                 second_cat, second_cat_duration = valid_secondary_category(line)
                 secondary_categories.setdefault(second_cat, 0)
                 secondary_categories[second_cat] += second_cat_duration
 
-        # if we are inside a day, check lines for metrics you want to track
-        elif in_date and line != '\n':
-            for metrics_tuple in metrics_list:
-                for metric in metrics_tuple:
-                    if metric in line.lower():
-                        metrics[metrics_tuple] += line.lower().count(metric)
-
         # if end of report for one day, print time for each category
         elif in_date and line == "\n":
-            daily_results = "\n" + "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
-                                              for i in cat_ru])
-            print(daily_results)
+            daily_results = "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
+                                       for i in cat_ru])
+            print("\n" + daily_results)
 
             # saving daily results for each category into computer clipboard
             # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 print(Red + "Total:", f"{hours} h {minutes} min", White)
 
             print(Purple + "Metrics: ", metrics, White)
-            pprint.pprint(secondary_categories)
+            print(Orange, secondary_categories, White)
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
 

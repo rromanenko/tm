@@ -3,5 +3,7 @@
 /inspection
 /templates
 .DS_Store
+.cache*
 .idea
 *.xml
+*.pyc
