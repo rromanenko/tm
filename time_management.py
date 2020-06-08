@@ -139,7 +139,8 @@ if __name__ == "__main__":
                 print(Red + "Total:", f"{hours} h {minutes} min", White)
 
             print(Purple + "Metrics: ", metrics, White)
-            print(Orange, secondary_categories, White)
+            if secondary_categories:
+                print(Orange, secondary_categories, White)
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
 
