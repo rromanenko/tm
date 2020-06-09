@@ -142,6 +142,7 @@ if __name__ == "__main__":
 
             if secondary_categories:
                 print(Orange + "Secondary metrics: ", secondary_categories, White)
+
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
 
