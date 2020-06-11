@@ -130,8 +130,10 @@ if __name__ == "__main__":
             if (hours, minutes) == (24, 0):
                 print(Green + "Total:", f"{hours} h", White)
 
-                # saving daily results for each category into computer clipboard
-                # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
+                # here we check if clipboard already contains data similar to daily results
+                # for this we search for patterns like 00.15 in clipboard
+                # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
+                # then we save daily result to clipboard
                 mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
                 if not mo or len(mo) != len(cat_ru):
                     pyperclip.copy(daily_results)
