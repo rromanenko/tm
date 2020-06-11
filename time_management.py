@@ -125,16 +125,17 @@ if __name__ == "__main__":
                                        for i in cat_ru])
             print("\n" + daily_results)
 
-            # saving daily results for each category into computer clipboard
-            # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
-            mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-            if not mo or len(mo) != len(cat_ru):
-                pyperclip.copy(daily_results)
-
             # if total is not "24 h 0 min", then print Total in different color
             (hours, minutes) = divmod(sum(categories.values()), 60)
             if (hours, minutes) == (24, 0):
                 print(Green + "Total:", f"{hours} h", White)
+
+                # saving daily results for each category into computer clipboard
+                # first checking if clipboard already contains data similar to daily results. if so, don't save anything.
+                mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                if not mo or len(mo) != len(cat_ru):
+                    pyperclip.copy(daily_results)
+
             else:
                 print(Red + "Total:", f"{hours} h {minutes} min", White)
 
