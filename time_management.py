@@ -11,7 +11,6 @@ DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
 
-
 White = '\033[0m'
 Red = '\033[31m'
 Green = '\033[32m'
@@ -174,10 +173,10 @@ if __name__ == "__main__":
                 except FileNotFoundError:
                     create_backup(cwd + backup_file, personal_files)
 
-            print(Purple + "Metrics: ", metrics, White)
+            print(Purple + "Metrics:", metrics, White)
 
             if secondary_categories:
-                print(Orange + "Secondary metrics: ", secondary_categories, White)
+                print(Orange + "Secondary metrics:", secondary_categories, White)
 
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
