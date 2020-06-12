@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+import os
 import pyperclip
 import re
 import sys
+import zipfile
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -20,7 +22,11 @@ Purple = '\033[35m'
 cat_ru = "БИРсХ"
 cat_en = "BIDsN"
 
-metrics_list = [("touched myself",), ("push-up", "pull-up", "yoga")]
+workplan = "План работы.txt"
+backup_file = "personalBackup.zip"
+personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
+
+metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga")]
 
 
 def valid_time(s):
@@ -50,23 +56,41 @@ def valid_secondary_category(s):
         return ()
 
 
+def path():
+    if sys.platform == "darwin":
+        return "/Volumes/untitled/"
+    elif sys.platform == "win32":
+        return "C:/Мои документы/"
+    else:
+        print("Unknown platform:", sys.platform)
+        exit()
+
+
+def create_backup(backup_path, file_list):
+    backup = zipfile.ZipFile(backup_path, "w")
+    for f in file_list:
+        # backupZip.write(file, compress_type=zipfile.ZIP_DEFLATED)
+        backup.write(f)
+    backup.close()
+
+
 if __name__ == "__main__":
 
-    # Windows sys.platform is "win32"
-    path = "C:/Мои документы/План работы.txt"
-    if sys.platform == "darwin":
-        path = "/Volumes/untitled/План работы.txt"
+    # set current working directory depending on if we are on mac or windows
+    # then open this directory
+    cwd = path()
+    os.chdir(cwd)
 
     try:
-        f = open(path, "r", encoding="cp1251")
+        workplan = open(cwd+workplan, "r", encoding="cp1251")
     except FileNotFoundError:
-        print(f"File План работы at {path} not found!")
+        print(f"File {workplan} at {cwd} not found!")
         exit()
 
     in_date = False
 
     while True:
-        line = f.readline()
+        line = workplan.readline()
 
         # if we are inside a day, check lines for metrics you want to track
         if in_date and line != '\n':
@@ -127,7 +151,9 @@ if __name__ == "__main__":
 
             # if total is not "24 h 0 min", then print Total in different color
             (hours, minutes) = divmod(sum(categories.values()), 60)
-            if (hours, minutes) == (24, 0):
+            if (hours, minutes) != (24, 0):
+                print(Red + "Total:", f"{hours} h {minutes} min", White)
+            else:
                 print(Green + "Total:", f"{hours} h", White)
 
                 # here we check if clipboard already contains data similar to daily results
@@ -138,8 +164,15 @@ if __name__ == "__main__":
                 if not mo or len(mo) != len(cat_ru):
                     pyperclip.copy(daily_results)
 
-            else:
-                print(Red + "Total:", f"{hours} h {minutes} min", White)
+                # if backup zip doesn't exist or any file in this zip differs from files on disk, zip the files
+                try:
+                    backupZip = zipfile.ZipFile(cwd + backup_file)
+                    for file in backupZip.namelist():
+                        if os.path.getsize(file) != backupZip.getinfo(file).file_size:
+                            create_backup(cwd + backup_file, personal_files)
+                            break
+                except FileNotFoundError:
+                    create_backup(cwd + backup_file, personal_files)
 
             print(Purple + "Metrics: ", metrics, White)
 
@@ -149,4 +182,4 @@ if __name__ == "__main__":
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
 
-    f.close()
+    workplan.close()
