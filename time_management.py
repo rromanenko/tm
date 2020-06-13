@@ -55,7 +55,7 @@ def valid_secondary_category(s):
         return ()
 
 
-def path():
+def get_path():
     if sys.platform == "darwin":
         return "/Volumes/untitled/"
     elif sys.platform == "win32":
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     # set current working directory depending on if we are on mac or windows
     # then open this directory
-    cwd = path()
+    cwd = get_path()
     os.chdir(cwd)
 
     try:
