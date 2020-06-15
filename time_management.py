@@ -32,9 +32,13 @@ def valid_time(s):
     """ Checks if string is a time record with a category, e.g. 01.55 - 02.10 - Б -
     If yes, returns a tuple with category and length of time in min
     """
-    valid_time_line = re.compile(rf'^(\d\d).(\d\d) - (\d\d).(\d\d) - ([{cat_en + cat_ru}])').search(s)
+    valid_time_line = re.compile(r'^(\d\d).(\d\d) - (\d\d).(\d\d) - (.)').search(s)
+
     if valid_time_line:
         start_hour, start_min, end_hour, end_min, time_category = valid_time_line.groups()
+
+        if time_category not in cat_en + cat_ru:
+            raise Exception("Unknown category [" + time_category + "] in line: " + s)
 
         # if category is entered in English, convert it to Russian
         if time_category in cat_en:
@@ -81,7 +85,7 @@ if __name__ == "__main__":
     os.chdir(cwd)
 
     try:
-        workplan = open(cwd+workplan, "r", encoding="cp1251")
+        workplan = open(cwd + workplan, "r", encoding="cp1251")
     except FileNotFoundError:
         print(f"File {workplan} at {cwd} not found!")
         exit()
