@@ -18,8 +18,8 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-cat_ru = "БИРсХ"
-cat_en = "BIDsN"
+cat_ru = "БКИРсХ"
+cat_en = "BCIDsN"
 
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
