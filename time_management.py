@@ -25,7 +25,7 @@ workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 
-metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga")]
+metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga", "split")]
 
 
 def valid_time(s):
