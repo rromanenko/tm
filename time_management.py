@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import pprint
 import pyperclip
 import re
 import sys
@@ -25,7 +26,7 @@ workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 
-metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga", "split")]
+metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga")]
 
 
 def valid_time(s):
@@ -148,9 +149,12 @@ if __name__ == "__main__":
 
         # if end of report for one day, print time for each category
         elif in_date and line == "\n":
+            # saving daily metrics without categories, so we could copy them to clipboard later
             daily_results = "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
                                        for i in cat_ru])
-            print("\n" + daily_results)
+
+            for i in cat_ru:
+                print(i + ": " + str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4)))
 
             # if total is not "24 h 0 min", then print Total in different color
             (hours, minutes) = divmod(sum(categories.values()), 60)
@@ -179,8 +183,10 @@ if __name__ == "__main__":
 
             print(Purple + "Metrics:", metrics, White)
 
-            if secondary_categories:
-                print(Orange + "Secondary metrics:", secondary_categories, White)
+            # if secondary_categories:
+            #     print(Orange, end="")
+            #     pprint.pprint(secondary_categories)
+            #     print(White)
 
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
