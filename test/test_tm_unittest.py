@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import unittest
-from time_management import valid_time
+from tm.time_management import *
 
 
 class TimeManagementTest(unittest.TestCase):

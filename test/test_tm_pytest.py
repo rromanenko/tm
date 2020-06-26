@@ -1,5 +1,4 @@
-from time_management import valid_time, valid_secondary_category, cat_en, cat_ru
-
+from tm.time_management import *
 
 def test_categories():
     assert len(cat_en) == len(cat_ru)

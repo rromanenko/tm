@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 # then we save daily result to clipboard
                 mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
                 if not mo or len(mo) != len(cat_ru):
-                    pyperclip.copy(daily_results)
+                   pyperclip.copy(daily_results)
 
                 # if backup zip doesn't exist or any file in this zip differs from files on disk, zip the files
                 try:
