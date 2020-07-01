@@ -11,6 +11,7 @@ import zipfile
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
+# DISPLAY_BREAKDOWN = 'Р'
 
 White = '\033[0m'
 Red = '\033[31m'
@@ -183,10 +184,10 @@ if __name__ == "__main__":
 
             print(Purple + "Metrics:", metrics, White)
 
-            # if secondary_categories:
-            #     print(Orange, end="")
-            #     pprint.pprint(secondary_categories)
-            #     print(White)
+            if secondary_categories:
+                print(Orange, end="")
+                pprint.pprint(secondary_categories)
+                print(White)
 
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
             in_date = False
