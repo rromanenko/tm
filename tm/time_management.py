@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import ezsheets
 import os
 import pprint
-import pyperclip
+# import pyperclip
 import re
 import sys
 import zipfile
@@ -20,14 +21,47 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-cat_ru = "БКИРсХ"
-cat_en = "BCIDsN"
+CATEGORIES_RU = "БКИРсХ"
+CATEGORIES_EN = "BCIDsN"
+
+GOOGLESHEET_TIMEREPORT = "1cn8rD8iO22nbr6C5HhEhWyT1ik4_47TUGUaKHi8Rc7M"
+WEEK_REPORTS_SHEET = "Week reports"
 
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-
 metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga")]
+
+
+def save_metrics_to_googlesheet(daily_metrics, week_day):
+    """ This function saves results for metrics_list into Time Management file.
+    Input:  daily metrics is a dictionary { metric: number of times in occured during the day }
+            week_day is day of the week where Monday = 1, etc
+    """
+    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIMEREPORT)[WEEK_REPORTS_SHEET]
+
+    # skipping rows with categories, starting with rows where metrics start
+    starting_row = 2 + len(CATEGORIES_EN) + 3
+    weekday_column = chr(ord("A") + week_day)
+
+    # check metrics until we reach an empty row
+    # if any of the metric equals to another metric in the metric dictionary, save it to the cell for the respective day
+    while week_reports['A' + str(starting_row)]:
+        for value in daily_metrics:
+            if str(",".join(value)) == week_reports['A' + str(starting_row)]:
+                week_reports[weekday_column + str(starting_row)] = daily_metrics[value]
+        starting_row += 1
+
+
+def save_results_to_googlesheet(daily_results, week_day):
+    """ This function saves results for the day into Time Management file.
+    Input: "5.5\n6.83\n..." and weekday number where Monday = 1
+    Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
+    """
+    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIMEREPORT)[WEEK_REPORTS_SHEET]
+    weekday_column = chr(ord("A") + week_day)
+    for num, category_time in enumerate(daily_results.split("\n")[:-1]):
+        week_reports[weekday_column + str(num + 3)] = category_time
 
 
 def valid_time(s):
@@ -39,12 +73,12 @@ def valid_time(s):
     if valid_time_line:
         start_hour, start_min, end_hour, end_min, time_category = valid_time_line.groups()
 
-        if time_category not in cat_en + cat_ru:
+        if time_category not in CATEGORIES_EN + CATEGORIES_RU:
             raise Exception("Unknown category [" + time_category + "] in line: " + s)
 
         # if category is entered in English, convert it to Russian
-        if time_category in cat_en:
-            time_category = cat_ru[cat_en.find(time_category)]
+        if time_category in CATEGORIES_EN:
+            time_category = CATEGORIES_RU[CATEGORIES_EN.find(time_category)]
 
         return time_category, int(end_hour) * 60 + int(end_min) - int(start_hour) * 60 - int(start_min)
     else:
@@ -93,6 +127,7 @@ if __name__ == "__main__":
         exit()
 
     in_date = False
+    weekDay = 0
 
     while True:
         line = workplan.readline()
@@ -117,6 +152,12 @@ if __name__ == "__main__":
             secondary_categories = {}
             total_cal = []
             metrics = {i: 0 for i in metrics_list}
+
+            # determining the day of the week. Then Monday is 1, Tuesday is 2, and so on
+            for counter, value in enumerate(
+                    ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]):
+                if value in line:
+                    weekDay = counter + 1
 
         # if there's a number of eaten calories in the line
         elif "kcal" in line:
@@ -148,14 +189,16 @@ if __name__ == "__main__":
                 secondary_categories.setdefault(second_cat, 0)
                 secondary_categories[second_cat] += second_cat_duration
 
-        # if end of report for one day, print time for each category
+        # if end of report for the day, print time for each category
         elif in_date and line == "\n":
-            # saving daily metrics without categories, so we could copy them to clipboard later
-            daily_results = "\n".join([str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4))
-                                       for i in cat_ru])
 
-            for i in cat_ru:
-                print(i + ": " + str(round(categories.get(i, 0) // 60 + categories.get(i, 0) % 60 / 60, 4)))
+            dailyResults = ""
+            for counter, value in enumerate(CATEGORIES_RU):
+                calculatedTime = str(round(categories.get(value, 0) // 60 + categories.get(value, 0) % 60 / 60, 4))
+                # saving daily metrics without categories, so we could copy them to clipboard later
+                dailyResults += calculatedTime + "\n"
+                # .. and printing the to screen as well
+                print(value + ": " + calculatedTime)
 
             # if total is not "24 h 0 min", then print Total in different color
             (hours, minutes) = divmod(sum(categories.values()), 60)
@@ -168,9 +211,9 @@ if __name__ == "__main__":
                 # for this we search for patterns like 00.15 in clipboard
                 # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
                 # then we save daily result to clipboard
-                mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-                if not mo or len(mo) != len(cat_ru):
-                   pyperclip.copy(daily_results)
+                # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                # if not mo or len(mo) != len(CATEGORIES_RU):
+                #     pyperclip.copy(dailyResults)
 
                 # if backup zip doesn't exist or any file in this zip differs from files on disk, zip the files
                 try:
@@ -182,14 +225,18 @@ if __name__ == "__main__":
                 except FileNotFoundError:
                     create_backup(cwd + backup_file, personal_files)
 
-            print(Purple + "Metrics:", metrics, White)
+                if weekDay:
+                    save_results_to_googlesheet(dailyResults, weekDay)
+                    save_metrics_to_googlesheet(metrics, weekDay)
 
             if secondary_categories:
                 print(Orange, end="")
                 pprint.pprint(secondary_categories)
                 print(White)
 
+            # print(Purple + "Metrics:", metrics, White)
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
+
             in_date = False
 
     workplan.close()

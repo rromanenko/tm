@@ -1,7 +1,7 @@
 from tm.time_management import *
 
 def test_categories():
-    assert len(cat_en) == len(cat_ru)
+    assert len(CATEGORIES_EN) == len(CATEGORIES_RU)
 
 def test_valid_time():
         assert valid_time('01.55 - 02.10 - Б -') == ('Б', 15)
