@@ -229,12 +229,12 @@ if __name__ == "__main__":
                     save_results_to_googlesheet(dailyResults, weekDay)
                     save_metrics_to_googlesheet(metrics, weekDay)
 
-            if secondary_categories:
-                print(Orange, end="")
-                pprint.pprint(secondary_categories)
-                print(White)
-
             # print(Purple + "Metrics:", metrics, White)
+            # if secondary_categories:
+            #     print(Orange, end="")
+            #     pprint.pprint(secondary_categories)
+            #     print(White)
+
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
 
             in_date = False
