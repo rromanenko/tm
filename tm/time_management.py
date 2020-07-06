@@ -2,7 +2,7 @@
 
 import ezsheets
 import os
-import pprint
+# import pprint
 # import pyperclip
 import re
 import sys
@@ -24,8 +24,11 @@ Purple = '\033[35m'
 CATEGORIES_RU = "БКИРсХ"
 CATEGORIES_EN = "BCIDsN"
 
-GOOGLESHEET_TIMEREPORT = "1cn8rD8iO22nbr6C5HhEhWyT1ik4_47TUGUaKHi8Rc7M"
+GOOGLESHEET_TIME_REPORT = "1cn8rD8iO22nbr6C5HhEhWyT1ik4_47TUGUaKHi8Rc7M"
+GOOGLESHEET_FINANCE_REPORT = "18LBj8iAIwGGdVfn10pq8cDoA-sEF_KKZgAsuEQ6Kwd8"
+
 WEEK_REPORTS_SHEET = "Week reports"
+# Google API's can be disabled at https://console.developers.google.com/apis/dashboard?project=quickstart-1592851518682
 
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
@@ -33,15 +36,29 @@ personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga")]
 
 
+def backup_tm_and_fm_reports():
+    """ This function downloads Time & Finance Management reports from Google Drive to a local folder /Personal
+    """
+    tm = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)
+    fm = ezsheets.Spreadsheet(GOOGLESHEET_FINANCE_REPORT)
+
+    os.chdir(cwd + "/Personal")
+    tm.downloadAsExcel()
+    fm.downloadAsExcel()
+    print(f"{tm.title} and {fm.title} have been backed up at {cwd + 'Personal'}")
+    os.chdir(cwd)
+
+
 def save_metrics_to_googlesheet(daily_metrics, week_day):
     """ This function saves results for metrics_list into Time Management file.
     Input:  daily metrics is a dictionary { metric: number of times in occured during the day }
             week_day is day of the week where Monday = 1, etc
     """
-    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIMEREPORT)[WEEK_REPORTS_SHEET]
+    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
 
     # skipping rows with categories, starting with rows where metrics start
     starting_row = 2 + len(CATEGORIES_EN) + 3
+
     weekday_column = chr(ord("A") + week_day)
 
     # check metrics until we reach an empty row
@@ -58,7 +75,7 @@ def save_results_to_googlesheet(daily_results, week_day):
     Input: "5.5\n6.83\n..." and weekday number where Monday = 1
     Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
     """
-    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIMEREPORT)[WEEK_REPORTS_SHEET]
+    week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
     weekday_column = chr(ord("A") + week_day)
     for num, category_time in enumerate(daily_results.split("\n")[:-1]):
         week_reports[weekday_column + str(num + 3)] = category_time
@@ -226,6 +243,7 @@ if __name__ == "__main__":
                     create_backup(cwd + backup_file, personal_files)
 
                 if weekDay:
+                    backup_tm_and_fm_reports()
                     save_results_to_googlesheet(dailyResults, weekDay)
                     save_metrics_to_googlesheet(metrics, weekDay)
 
