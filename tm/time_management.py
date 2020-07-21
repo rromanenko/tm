@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import ezsheets
+# import ezsheets
 import os
 # import pprint
 # import pyperclip
@@ -37,13 +37,14 @@ personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga", "back and eye")]
 
 
-def backup_tm_and_fm_reports():
+def backup_tm_and_fm_reports(path):
     """ This function downloads Time & Finance Management reports from Google Drive to a local folder /Personal
     """
+    import ezsheets
     tm = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)
     fm = ezsheets.Spreadsheet(GOOGLESHEET_FINANCE_REPORT)
 
-    os.chdir(cwd + "/Personal")
+    os.chdir(path + "/Personal")
     tm.downloadAsExcel()
     fm.downloadAsExcel()
     print(f"{tm.title} and {fm.title} have been backed up at {cwd + 'Personal'}")
@@ -55,6 +56,7 @@ def save_metrics_to_googlesheet(daily_metrics, week_day):
     Input:  daily metrics is a dictionary { metric: number of times in occured during the day }
             week_day is day of the week where Monday = 1, etc
     """
+    import ezsheets
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
 
     # skipping rows with categories, starting with rows where metrics start
@@ -76,6 +78,7 @@ def save_results_to_googlesheet(daily_results, week_day):
     Input: "5.5\n6.83\n..." and weekday number where Monday = 1
     Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
     """
+    import ezsheets
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
     weekday_column = chr(ord("A") + week_day)
     for num, category_time in enumerate(daily_results.split("\n")[:-1]):
@@ -123,11 +126,11 @@ def get_path():
         exit()
 
 
-def create_backup(backup_path, file_list):
-    backup = zipfile.ZipFile(backup_path, "w")
+def create_backup(backup_path, backup_file, file_list):
+    backup = zipfile.ZipFile(backup_path + backup_file, "w")
     for f in file_list:
         # backupZip.write(file, compress_type=zipfile.ZIP_DEFLATED)
-        backup.write(f)
+        backup.write(backup_path + f)
     backup.close()
 
 
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     # set current working directory depending on if we are on mac or windows
     # then open this directory
     cwd = get_path()
-    os.chdir(cwd)
+    # os.chdir(cwd)
 
     try:
         workplan = open(cwd + workplan, "r", encoding="cp1251")
@@ -241,12 +244,13 @@ if __name__ == "__main__":
                             create_backup(cwd + backup_file, personal_files)
                             break
                 except FileNotFoundError:
-                    create_backup(cwd + backup_file, personal_files)
+                    create_backup(cwd, backup_file, personal_files)
 
                 if weekDay:
                     # thread_backup = threading.Thread(target=backup_tm_and_fm_reports)
                     # thread_backup.start()
-                    backup_tm_and_fm_reports()
+
+                    backup_tm_and_fm_reports(cwd)
 
                     # thread_save_results = threading.Thread(target=save_results_to_googlesheet,
                     #                                        args=[dailyResults, weekDay])
