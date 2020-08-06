@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# import ezsheets
 import os
 # import pprint
 # import pyperclip
@@ -34,7 +33,7 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("push-up", "pull-up", "yoga", "back and eye")]
+metrics_list = [("tmyself",), ("push-up","pull-up",), ("back and eye",), ("yoga", "abs", "split")]
 
 
 def backup_tm_and_fm_reports(path):
