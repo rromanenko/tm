@@ -173,11 +173,14 @@ if __name__ == "__main__":
             total_cal = []
             metrics = {i: 0 for i in metrics_list}
 
-            # determining the day of the week. Then Monday is 1, Tuesday is 2, and so on
-            for counter, value in enumerate(
-                    ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]):
-                if value in line:
-                    weekDay = counter + 1
+            # checking there is a correct day of the week in the date line, e.g. 08.08.2020, SATURDAY
+            # If there is, determining the number of the day, where Monday is 1, Tuesday is 2, and so on
+            weekdays = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+            if line.split()[1] not in weekdays:
+                print(f"No correct weekday is found in {line}")
+                exit()
+            else:
+                weekDay = weekdays.index(line.split()[1]) + 1
 
         # if there's a number of eaten calories in the line
         elif "kcal" in line:
