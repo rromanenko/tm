@@ -8,8 +8,6 @@ import sys
 # import threading
 import zipfile
 
-# a test change in master branch
-
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
