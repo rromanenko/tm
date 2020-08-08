@@ -163,8 +163,8 @@ if __name__ == "__main__":
         if line.startswith('====='):
             break
 
-        # if the line starts with something like "27.02.2017,", it's a start of a new day
-        elif re.compile(rf'^\d\d.\d\d.\d\d\d\d,').search(line):
+        # if the line starts with something like "27.02.2017, MONDAY", it's a start of a new day
+        elif re.compile(rf'^\d\d.\d\d.\d\d\d\d, MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY').search(line):
             print("\n" + Blue + line + White, end="")
             in_date = True
             prev_time = ""
@@ -173,14 +173,8 @@ if __name__ == "__main__":
             total_cal = []
             metrics = {i: 0 for i in metrics_list}
 
-            # checking there is a correct day of the week in the date line, e.g. 08.08.2020, SATURDAY
-            # If there is, determining the number of the day, where Monday is 1, Tuesday is 2, and so on
-            weekdays = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
-            if line.split()[1] not in weekdays:
-                print(f"No correct weekday is found in {line}")
-                exit()
-            else:
-                weekDay = weekdays.index(line.split()[1]) + 1
+            # Determining the number of the day of the week, where Monday is 1, Tuesday is 2, and so on
+            weekDay = 1 + ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"].index(line.split()[1])
 
         # if there's a number of eaten calories in the line
         elif "kcal" in line:
