@@ -8,7 +8,7 @@ import sys
 # import threading
 import zipfile
 
-# choose what category to display
+# choose what category to displa
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
@@ -21,8 +21,8 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-CATEGORIES_RU = "БКИРсХ"
-CATEGORIES_EN = "BCIDsN"
+CATEGORIES_RU = "БИРсХ"
+CATEGORIES_EN = "BIDsN"
 
 GOOGLESHEET_TIME_REPORT = "1cn8rD8iO22nbr6C5HhEhWyT1ik4_47TUGUaKHi8Rc7M"
 GOOGLESHEET_FINANCE_REPORT = "18LBj8iAIwGGdVfn10pq8cDoA-sEF_KKZgAsuEQ6Kwd8"
@@ -33,7 +33,8 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("push-up","pull-up",), ("back and eye",), ("yoga", "abs", "split")]
+metrics_list = [("tmyself",), ("push-up", "pull-up",), ("back and eye",), ("yoga", "abs", "split")]
+calculated_metrics = {"push-up": 0, "pull-up": 0}
 
 
 def backup_tm_and_fm_reports(path):
@@ -135,10 +136,8 @@ def create_backup(backup_path, backup_file, file_list):
 
 if __name__ == "__main__":
 
-    # set current working directory depending on if we are on mac or windows
-    # then open this directory
+    # get current working directory depending on if we are on mac or windows
     cwd = get_path()
-    # os.chdir(cwd)
 
     try:
         workplan = open(cwd + workplan, "r", encoding="cp1251")
@@ -159,6 +158,12 @@ if __name__ == "__main__":
                     if metric in line.lower():
                         metrics[metrics_tuple] += line.lower().count(metric)
 
+            for metric in calculated_metrics:
+                if metric in line.lower():
+                    s = line.lower()
+                    subst = s.find(metric)
+                    calculated_metrics[metric] += int(s[s.find('(', subst) + 1: s.find(')', subst)])
+
         # if end of all daily reports
         if line.startswith('====='):
             break
@@ -172,6 +177,7 @@ if __name__ == "__main__":
             secondary_categories = {}
             total_cal = []
             metrics = {i: 0 for i in metrics_list}
+            calculated_metrics = {i: 0 for i in calculated_metrics}
 
             # Determining the number of the day of the week, where Monday is 1, Tuesday is 2, and so on
             weekDay = 1 + ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"].index(line.split()[1])
@@ -255,6 +261,7 @@ if __name__ == "__main__":
                     save_metrics_to_googlesheet(metrics, weekDay)
 
             # print(Purple + "Metrics:", metrics, White)
+            # print(Purple + "Calculated Metrics:", calculated_metrics, White)
             # if secondary_categories:
             #     print(Orange, end="")
             #     pprint.pprint(secondary_categories)
