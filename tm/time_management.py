@@ -5,10 +5,12 @@ import os
 # import pyperclip
 import re
 import sys
-# import threading
 import zipfile
 
-# choose what category to displa
+# false - off, anything else - on
+heavy_functions_toggle = 1
+
+# choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
@@ -253,15 +255,8 @@ if __name__ == "__main__":
                 except FileNotFoundError:
                     create_backup(cwd, backup_file, personal_files)
 
-                if weekDay:
-                    # thread_backup = threading.Thread(target=backup_tm_and_fm_reports)
-                    # thread_backup.start()
-
+                if weekDay and heavy_functions_toggle:
                     backup_tm_and_fm_reports(cwd)
-
-                    # thread_save_results = threading.Thread(target=save_results_to_googlesheet,
-                    #                                        args=[dailyResults, weekDay])
-                    # thread_save_results.start()
                     save_results_to_googlesheet(dailyResults, weekDay)
                     save_metrics_to_googlesheet(metrics, weekDay)
 
