@@ -161,8 +161,13 @@ if __name__ == "__main__":
             for metric in calculated_metrics:
                 if metric in line.lower():
                     s = line.lower()
-                    subst = s.find(metric)
-                    calculated_metrics[metric] += int(s[s.find('(', subst) + 1: s.find(')', subst)])
+                    start = s.find('(', s.find(metric))
+                    end = s.find(')', s.find(metric))
+                    if start != -1 and end != -1:
+                        try:
+                            calculated_metrics[metric] += int(s[start + 1: end])
+                        except ValueError:
+                            pass
 
         # if end of all daily reports
         if line.startswith('====='):
