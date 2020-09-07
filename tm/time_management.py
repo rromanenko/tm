@@ -8,7 +8,7 @@ import sys
 import zipfile
 
 # false - off, anything else - on
-heavy_functions_toggle = 1
+heavy_functions_toggle = True
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -35,8 +35,8 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("push-up", "pull-up",), ("back and eye",), ("yoga", "abs", "split")]
-calculated_metrics = {"push-up": 0, "pull-up": 0}
+metrics_list = [("tmyself",), ("back and eye",), ("yoga", "abs", "split")]
+calculated_metrics = {"speak english": 0}
 
 
 def backup_tm_and_fm_reports(path):
@@ -261,7 +261,7 @@ if __name__ == "__main__":
                     save_metrics_to_googlesheet(metrics, weekDay)
 
             # print(Purple + "Metrics:", metrics, White)
-            # print(Purple + "Calculated Metrics:", calculated_metrics, White)
+            print(Purple + "Calculated Metrics:", calculated_metrics, White)
             # if secondary_categories:
             #     print(Orange, end="")
             #     pprint.pprint(secondary_categories)
