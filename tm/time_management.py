@@ -42,15 +42,15 @@ calculated_metrics = {"speak english": 0}
 def backup_tm_and_fm_reports(path):
     """ This function downloads Time & Finance Management reports from Google Drive to a local folder /Personal
     """
-    import ezsheets
+    # import ezsheets
     tm = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)
     fm = ezsheets.Spreadsheet(GOOGLESHEET_FINANCE_REPORT)
 
     os.chdir(path + "/Personal")
     tm.downloadAsExcel()
     fm.downloadAsExcel()
-    print(f"{tm.title} and {fm.title} have been backed up at {cwd + 'Personal'}")
-    os.chdir(cwd)
+    print(f"{tm.title} and {fm.title} have been backed up at {path + 'Personal'}")
+    os.chdir(path)
 
 
 def save_metrics_to_googlesheet(daily_metrics, week_day):
@@ -58,7 +58,7 @@ def save_metrics_to_googlesheet(daily_metrics, week_day):
     Input:  daily metrics is a dictionary { metric: number of times in occured during the day }
             week_day is day of the week where Monday = 1, etc
     """
-    import ezsheets
+    # import ezsheets
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
 
     # skipping rows with categories, starting with rows where metrics start
@@ -80,7 +80,7 @@ def save_results_to_googlesheet(daily_results, week_day):
     Input: "5.5\n6.83\n..." and weekday number where Monday = 1
     Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
     """
-    import ezsheets
+    # import ezsheets
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
     weekday_column = chr(ord("A") + week_day)
     for num, category_time in enumerate(daily_results.split("\n")[:-1]):
@@ -256,6 +256,11 @@ if __name__ == "__main__":
                     create_backup(cwd, backup_file, personal_files)
 
                 if weekDay and heavy_functions_toggle:
+                    try:
+                        import ezsheets
+                    except:
+                        pass
+
                     backup_tm_and_fm_reports(cwd)
                     save_results_to_googlesheet(dailyResults, weekDay)
                     save_metrics_to_googlesheet(metrics, weekDay)
