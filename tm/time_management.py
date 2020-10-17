@@ -8,7 +8,7 @@ import sys
 import zipfile
 
 # false - off, anything else - on
-heavy_functions_toggle = False
+heavy_functions_toggle = True
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
