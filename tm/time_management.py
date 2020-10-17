@@ -8,7 +8,7 @@ import sys
 import zipfile
 
 # false - off, anything else - on
-heavy_functions_toggle = True
+heavy_functions_toggle = False
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -46,31 +46,34 @@ def backup_tm_and_fm_reports(path):
     fm = ezsheets.Spreadsheet(GOOGLESHEET_FINANCE_REPORT)
 
     os.chdir(path + "/Personal")
+    print(f"Saving {tm.title} and {fm.title} at {path + 'Personal'} ...")
     tm.downloadAsExcel()
     fm.downloadAsExcel()
-    print(f"{tm.title} and {fm.title} have been backed up at {path + 'Personal'}")
+    print("Done.")
     os.chdir(path)
 
 
 def save_metrics_to_googlesheet(daily_metrics, week_day):
     """ This function saves results for metrics_list into Time Management file.
-    Input:  daily metrics is a dictionary { metric: number of times in occured during the day }
+    Input:  daily metrics is a dictionary { metric: number of times it occurred during the day }
             week_day is day of the week where Monday = 1, etc
     """
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
+    print(f"Saving metrics to {week_reports.title} ...")
 
     # skipping rows with categories, starting with rows where metrics start
     starting_row = 2 + len(CATEGORIES_EN) + 3
 
     weekday_column = chr(ord("A") + week_day)
 
-    # check metrics until we reach an empty row
+    # go through metrics until we reach an empty row
     # if any of the metric equals to another metric in the metric dictionary, save it to the cell for the respective day
     while week_reports['A' + str(starting_row)]:
         for value in daily_metrics:
             if str(",".join(value)) == week_reports['A' + str(starting_row)]:
                 week_reports[weekday_column + str(starting_row)] = daily_metrics[value]
         starting_row += 1
+    print("Done.")
 
 
 def save_results_to_googlesheet(daily_results, week_day):
@@ -79,13 +82,16 @@ def save_results_to_googlesheet(daily_results, week_day):
     Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
     """
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
+    print(f"Saving daily results to {week_reports.title} ...")
+
     weekday_column = chr(ord("A") + week_day)
     for num, category_time in enumerate(daily_results.split("\n")[:-1]):
         week_reports[weekday_column + str(num + 3)] = category_time
+    print("Done.")
 
 
 def valid_time(s):
-    """ Checks if string is a time record with a category, e.g. 01.55 - 02.10 - Б -
+    """ Checks if the string is a time record with a category, e.g. 01.55 - 02.10 - Б -
     If yes, returns a tuple with category and length of time in min
     """
     valid_time_line = re.compile(r'^(\d\d).(\d\d) - (\d\d).(\d\d) - (.)').search(s)
@@ -106,7 +112,8 @@ def valid_time(s):
 
 
 def valid_secondary_category(s):
-    """ Checks if line contains a secondary category, i.e. ix, e.g. 01.55 - 02.10 - Б - ix:
+    """ Checks if line contains a secondary category, e.g. 01.55 - 02.10 - Б - ix:
+    Here "ix" is a secondary category, separated with ":" sign
     If yes, returns a tuple ((primary category, secondary category), duration), else returns an empty string
     """
     if ":" in s:
@@ -128,7 +135,7 @@ def get_path():
 def create_backup(backup_path, backup_file, file_list):
     backup = zipfile.ZipFile(backup_path + backup_file, "w")
     for f in file_list:
-        # backupZip.write(file, compress_type=zipfile.ZIP_DEFLATED)
+        # backup.write(backup_path + f, compress_type=zipfile.ZIP_DEFLATED)
         backup.write(backup_path + f)
     backup.close()
 
@@ -141,7 +148,7 @@ if __name__ == "__main__":
     try:
         workplan = open(cwd + workplan, "r", encoding="cp1251")
     except FileNotFoundError:
-        print(f"File {workplan} at {cwd} not found!")
+        print(f"File {workplan} not found at {cwd}!")
         exit()
 
     in_date = False
@@ -227,6 +234,12 @@ if __name__ == "__main__":
                 # .. and printing the to screen as well
                 print(value + ": " + calculatedTime)
 
+            # Adding calculated_metrics dictionary to metrics dict
+            # As metrics dict elements are tuple:value, while calculated metrics are string:value,
+            # we can't simply combine dicts and have to add them through a cycle
+            for i in calculated_metrics.keys():
+                metrics[(i,)] = calculated_metrics[i]
+
             # if total is not "24 h 0 min", then print Total in different color
             (hours, minutes) = divmod(sum(categories.values()), 60)
             if (hours, minutes) != (24, 0):
@@ -242,28 +255,35 @@ if __name__ == "__main__":
                 # if not mo or len(mo) != len(CATEGORIES_RU):
                 #     pyperclip.copy(dailyResults)
 
-                # if backup zip doesn't exist or any file in this zip differs from files on disk, zip the files
+                # if backup zip is empty or doesn't exist or any file in this zip differs from files on disk,
+                # then zip the personal files
+                flag = False
                 try:
                     backupZip = zipfile.ZipFile(cwd + backup_file)
+                    if not backupZip.namelist():
+                        flag = True
+
                     for file in backupZip.namelist():
-                        if os.path.getsize(file) != backupZip.getinfo(file).file_size:
-                            create_backup(cwd + backup_file, personal_files)
+                        if os.path.getsize("/" + file) != backupZip.getinfo(file).file_size:
+                            flag = True
                             break
                 except FileNotFoundError:
+                    flag = True
+
+                if flag:
                     create_backup(cwd, backup_file, personal_files)
+                    print(f"{personal_files} zipped in {backup_file} at {cwd}, size {os.path.getsize(cwd+backup_file)}")
 
                 if weekDay and heavy_functions_toggle:
                     try:
                         import ezsheets
+                        backup_tm_and_fm_reports(cwd)
+                        save_results_to_googlesheet(dailyResults, weekDay)
+                        save_metrics_to_googlesheet(metrics, weekDay)
                     except:
-                        pass
-
-                    backup_tm_and_fm_reports(cwd)
-                    save_results_to_googlesheet(dailyResults, weekDay)
-                    save_metrics_to_googlesheet(metrics, weekDay)
+                        print("Import ezsheets library didn't work")
 
             # print(Purple + "Metrics:", metrics, White)
-            print(Purple + "Calculated Metrics:", calculated_metrics, White)
             # if secondary_categories:
             #     print(Orange, end="")
             #     pprint.pprint(secondary_categories)
