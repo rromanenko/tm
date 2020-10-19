@@ -274,7 +274,7 @@ if __name__ == "__main__":
                     create_backup(cwd, backup_file, personal_files)
                     print(f"{personal_files} zipped in {backup_file} at {cwd}, size {os.path.getsize(cwd+backup_file)}")
 
-                if weekDay and heavy_functions_toggle:
+                if heavy_functions_toggle:
                     try:
                         import ezsheets
                         backup_tm_and_fm_reports(cwd)
