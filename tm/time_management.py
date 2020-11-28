@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-# import pprint
+import pprint
 # import pyperclip
 import re
 import sys
@@ -10,7 +10,7 @@ import zipfile
 # false - off, anything else - on
 heavy_functions_toggle = True
 
-# choose what category to display
+# choose what category to display®
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
@@ -35,8 +35,8 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("back and eye",), ("yoga", "abs", "split")]
-calculated_metrics = {"speak english": 0}
+metrics_list = [("tmyself",), ("back and eye", "abs", "palming")]
+calculated_metrics = {"speak english": 0, "yoga":0}
 
 
 def backup_tm_and_fm_reports(path):
@@ -284,10 +284,10 @@ if __name__ == "__main__":
                         print("Import ezsheets library didn't work")
 
             # print(Purple + "Metrics:", metrics, White)
-            # if secondary_categories:
-            #     print(Orange, end="")
-            #     pprint.pprint(secondary_categories)
-            #     print(White)
+            if secondary_categories:
+                print(Orange, end="")
+                pprint.pprint(secondary_categories)
+                print(White)
 
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
 
