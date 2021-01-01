@@ -2,7 +2,7 @@
 
 import os
 import pprint
-import pyperclip
+# import pyperclip
 import re
 import sys
 import time
@@ -252,9 +252,9 @@ if __name__ == "__main__":
                 # for this we search for patterns like 00.15 in clipboard
                 # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
                 # then we save daily result to clipboard
-                mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-                if not mo or len(mo) != len(CATEGORIES_RU):
-                    pyperclip.copy(dailyResults)
+                # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                # if not mo or len(mo) != len(CATEGORIES_RU):
+                #     pyperclip.copy(dailyResults)
 
                 # if backup zip is empty or doesn't exist or any file in this zip differs from files on disk,
                 # then zip the personal files
