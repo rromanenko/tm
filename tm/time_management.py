@@ -37,7 +37,7 @@ workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 metrics_list = [("tmyself",), ("back and eye", "abs", "palming")]
-calculated_metrics = {"speak english": 0, "yoga":0}
+calculated_metrics = {"yoga":0}
 
 
 def backup_tm_and_fm_reports(path):
@@ -166,8 +166,8 @@ if __name__ == "__main__":
                         metrics[metrics_tuple] += line.lower().count(metric)
 
             for metric in calculated_metrics:
-                if metric in line.lower():
-                    s = line.lower()
+                s = line.lower()
+                while metric in s:
                     start = s.find('(', s.find(metric))
                     end = s.find(')', s.find(metric))
                     if start != -1 and end != -1:
@@ -175,6 +175,9 @@ if __name__ == "__main__":
                             calculated_metrics[metric] += int(s[start + 1: end])
                         except ValueError:
                             pass
+                    else:
+                        break
+                    s = s[end+1:]
 
         # if end of all daily reports
         if line.startswith('====='):
@@ -278,11 +281,10 @@ if __name__ == "__main__":
                 if heavy_functions_toggle:
                     try:
                         import ezsheets
-                        backup_tm_and_fm_reports(cwd)
-                        time.sleep(60)
                         save_results_to_googlesheet(dailyResults, weekDay)
-                        time.sleep(60)
                         save_metrics_to_googlesheet(metrics, weekDay)
+                        time.sleep(60)
+                        backup_tm_and_fm_reports(cwd)
                     except Exception as e:
                         print("Exception: ", e)
 
