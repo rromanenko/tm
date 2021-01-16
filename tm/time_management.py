@@ -11,7 +11,7 @@ import zipfile
 # false - off, anything else - on
 heavy_functions_toggle = True
 
-# choose what category to display®
+# choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
 # DISPLAY_BREAKDOWN = 'BБ'
 # DISPLAY_BREAKDOWN = 'ИI'
@@ -37,7 +37,36 @@ workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 metrics_list = [("tmyself",), ("back and eye", "abs", "palming")]
-calculated_metrics = {"yoga":0}
+calculated_metrics = {"yoga": 0}
+
+
+def log_chess_time(log_time):
+    import requests
+    from requests.auth import HTTPBasicAuth
+    import json
+
+    url = "https://rroman.atlassian.net/rest/api/latest/issue/MY-853/worklog"
+    auth = HTTPBasicAuth(username, token)
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    payload = json.dumps({"timeSpentSeconds": log_time * 60})
+
+    response = requests.request(
+        "POST",
+        url,
+        data=payload,
+        headers=headers,
+        auth=auth
+    )
+
+    if response.status_code == 201:
+        print(f" {log_time} min logged in successfully!")
+    else:
+        print(f"Error: {response.status_code}")
+        print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
 
 def backup_tm_and_fm_reports(path):
@@ -288,11 +317,15 @@ if __name__ == "__main__":
                     except Exception as e:
                         print("Exception: ", e)
 
-            print(Purple + "Metrics:", metrics, White)
+            # print(Purple + "Metrics:", metrics, White)
             if secondary_categories:
                 print(Orange, end="")
                 pprint.pprint(secondary_categories)
                 print(White)
+                if ("Р", "chess") in secondary_categories:
+                    a = input(f"Do you want to log {secondary_categories[('Р', 'chess')]} min to chess epic (y/n)?: ")
+                    if a.lower().startswith("y"):
+                        log_chess_time(secondary_categories[("Р", "chess")])
 
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
 
