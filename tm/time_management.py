@@ -7,7 +7,6 @@ import re
 import sys
 import time
 import zipfile
-from tm_config import *
 
 # false - off, anything else - on
 heavy_functions_toggle = True
@@ -42,9 +41,10 @@ calculated_metrics = {"yoga": 0}
 
 
 def log_chess_time(log_time):
+    import json
     import requests
     from requests.auth import HTTPBasicAuth
-    import json
+    from tm_config import jira_login, jira_token
 
     url = "https://rroman.atlassian.net/rest/api/latest/issue/MY-853/worklog"
     auth = HTTPBasicAuth(jira_login, jira_token)
