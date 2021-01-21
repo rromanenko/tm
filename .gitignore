@@ -6,6 +6,7 @@
 .cache*
 .idea
 credentials-sheets.json
+tm_config.py
 *.pickle
 *.pyc
 *.xml

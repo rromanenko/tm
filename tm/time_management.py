@@ -7,6 +7,7 @@ import re
 import sys
 import time
 import zipfile
+from tm_config import *
 
 # false - off, anything else - on
 heavy_functions_toggle = True
@@ -46,7 +47,7 @@ def log_chess_time(log_time):
     import json
 
     url = "https://rroman.atlassian.net/rest/api/latest/issue/MY-853/worklog"
-    auth = HTTPBasicAuth(username, token)
+    auth = HTTPBasicAuth(jira_login, jira_token)
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json"
@@ -314,6 +315,11 @@ if __name__ == "__main__":
                         save_metrics_to_googlesheet(metrics, weekDay)
                         time.sleep(60)
                         backup_tm_and_fm_reports(cwd)
+
+                        if secondary_categories and ("Р", "chess") in secondary_categories:
+                            a = input(f"Log {secondary_categories[('Р', 'chess')]} min to chess epic (y/n)?: ")
+                            if a.lower().startswith("y"):
+                                log_chess_time(secondary_categories[("Р", "chess")])
                     except Exception as e:
                         print("Exception: ", e)
 
@@ -322,11 +328,6 @@ if __name__ == "__main__":
                 print(Orange, end="")
                 pprint.pprint(secondary_categories)
                 print(White)
-                if ("Р", "chess") in secondary_categories:
-                    a = input(f"Do you want to log {secondary_categories[('Р', 'chess')]} min to chess epic (y/n)?: ")
-                    if a.lower().startswith("y"):
-                        log_chess_time(secondary_categories[("Р", "chess")])
-
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
 
             in_date = False
