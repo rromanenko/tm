@@ -9,7 +9,7 @@ import time
 import zipfile
 
 # false - off, anything else - on
-heavy_functions_toggle = True
+heavy_functions_toggle = False
 
 # choose what category to display
 DISPLAY_BREAKDOWN = 'ХN'
@@ -37,8 +37,7 @@ workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
 metrics_list = [("tmyself",), ("back and eye", "abs", "palming")]
-calculated_metrics = {"yoga": 0}
-
+calculated_metrics = {"speak English": 0, "yoga": 0, "push-ups": 0}
 
 def log_chess_time(log_time):
     import json
@@ -197,9 +196,9 @@ if __name__ == "__main__":
 
             for metric in calculated_metrics:
                 s = line.lower()
-                while metric in s:
-                    start = s.find('(', s.find(metric))
-                    end = s.find(')', s.find(metric))
+                while metric.lower() in s:
+                    start = s.find('(', s.find(metric.lower()))
+                    end = s.find(')', s.find(metric.lower()))
                     if start != -1 and end != -1:
                         try:
                             calculated_metrics[metric] += int(s[start + 1: end])
@@ -320,10 +319,11 @@ if __name__ == "__main__":
                             a = input(f"Log {secondary_categories[('Р', 'chess')]} min to chess epic (y/n)?: ")
                             if a.lower().startswith("y"):
                                 log_chess_time(secondary_categories[("Р", "chess")])
+
                     except Exception as e:
                         print("Exception: ", e)
 
-            # print(Purple + "Metrics:", metrics, White)
+            print(Purple + "Metrics:", metrics, White)
             if secondary_categories:
                 print(Orange, end="")
                 pprint.pprint(secondary_categories)
