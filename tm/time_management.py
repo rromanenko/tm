@@ -9,13 +9,11 @@ import time
 import zipfile
 
 # false - off, anything else - on
-heavy_functions_toggle = False
+heavy_functions_toggle = True
 
 # choose what category to display
-DISPLAY_BREAKDOWN = 'ХN'
-# DISPLAY_BREAKDOWN = 'BБ'
-# DISPLAY_BREAKDOWN = 'ИI'
-# DISPLAY_BREAKDOWN = 'Р'
+DISPLAY_BREAKDOWN = ''
+# DISPLAY_BREAKDOWN = 'ХN'
 
 White = '\033[0m'
 Red = '\033[31m'
@@ -36,8 +34,9 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("back and eye", "abs", "palming")]
-calculated_metrics = {"speak English": 0, "yoga": 0, "push-ups": 0}
+metrics_list = [("tmyself",), ("back and eye", "abs", "palming"), ("yoga","back workout"), (" wc",)]
+calculated_metrics = {}
+
 
 def log_chess_time(log_time):
     import json
@@ -76,10 +75,10 @@ def backup_tm_and_fm_reports(path):
     fm = ezsheets.Spreadsheet(GOOGLESHEET_FINANCE_REPORT)
 
     os.chdir(path + "/Personal")
-    print(f"Saving {tm.title} and {fm.title} at {path + 'Personal'} ...")
+    print(f"Saving {tm.title} and {fm.title} at {path + 'Personal'} ...", end=" ")
     tm.downloadAsExcel()
     fm.downloadAsExcel()
-    print("Done.")
+    print(Green + "Done.", White)
     os.chdir(path)
 
 
@@ -89,7 +88,7 @@ def save_metrics_to_googlesheet(daily_metrics, week_day):
             week_day is day of the week where Monday = 1, etc
     """
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
-    print(f"Saving metrics to {week_reports.title} ...")
+    print(f"Saving metrics to {week_reports.title} ...", end=" ")
 
     # skipping rows with categories, starting with rows where metrics start
     starting_row = 2 + len(CATEGORIES_EN) + 3
@@ -103,7 +102,7 @@ def save_metrics_to_googlesheet(daily_metrics, week_day):
             if str(",".join(value)) == week_reports['A' + str(starting_row)]:
                 week_reports[weekday_column + str(starting_row)] = daily_metrics[value]
         starting_row += 1
-    print("Done.")
+    print(Green + "Done.", White)
 
 
 def save_results_to_googlesheet(daily_results, week_day):
@@ -112,12 +111,12 @@ def save_results_to_googlesheet(daily_results, week_day):
     Top-left corner is B3, that's why we have to shift from A1 to chr(ord("A") + week_day) and num + 3
     """
     week_reports = ezsheets.Spreadsheet(GOOGLESHEET_TIME_REPORT)[WEEK_REPORTS_SHEET]
-    print(f"Saving daily results to {week_reports.title} ...")
+    print(f"Saving daily results to {week_reports.title} ...", end=" ")
 
     weekday_column = chr(ord("A") + week_day)
     for num, category_time in enumerate(daily_results.split("\n")[:-1]):
         week_reports[weekday_column + str(num + 3)] = category_time
-    print("Done.")
+    print(Green + "Done.", White)
 
 
 def valid_time(s):
