@@ -12,8 +12,8 @@ import zipfile
 heavy_functions_toggle = True
 
 # choose what category to display
-DISPLAY_BREAKDOWN = ''
-# DISPLAY_BREAKDOWN = 'ХN'
+#DISPLAY_BREAKDOWN = 'БB'
+DISPLAY_BREAKDOWN = 'ХN'
 
 White = '\033[0m'
 Red = '\033[31m'
@@ -22,8 +22,8 @@ Orange = '\033[33m'
 Blue = '\033[34m'
 Purple = '\033[35m'
 
-CATEGORIES_RU = "БИРсХ"
-CATEGORIES_EN = "BIDsN"
+CATEGORIES_RU = "БЗИРсХ"
+CATEGORIES_EN = "BHIDsN"
 
 GOOGLESHEET_TIME_REPORT = "1cn8rD8iO22nbr6C5HhEhWyT1ik4_47TUGUaKHi8Rc7M"
 GOOGLESHEET_FINANCE_REPORT = "18LBj8iAIwGGdVfn10pq8cDoA-sEF_KKZgAsuEQ6Kwd8"
@@ -33,10 +33,10 @@ WEEK_REPORTS_SHEET = "Week reports"
 
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
-personal_files = ["life.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("back and eye", "abs", "palming"), ("yoga","back workout"), (" wc",)]
-calculated_metrics = {}
-
+personal_files = ["life.txt", "life2.txt", "План работы.txt", "Цели.txt"]
+metrics_list = [("tmyself",), ("exercise", " abs","palming"), (" wc",)]
+calculated_metrics = {"yoga": 0, "push-ups": 0, "speak English": 0}
+#calculated_metrics = {}
 
 def log_chess_time(log_time):
     import json
