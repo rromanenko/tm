@@ -8,7 +8,7 @@ import sys
 import time
 import zipfile
 
-# false - off, anything else - on
+## false - off, anything else - on
 heavy_functions_toggle = True
 
 # choose what category to display
@@ -34,9 +34,9 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "life2.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("exercise", " abs","palming"), (" wc",)]
-calculated_metrics = {"yoga": 0, "push-ups": 0, "speak English": 0}
-#calculated_metrics = {}
+metrics_list = [("tmyself",), ("exercises","palming"), (" wc",)]
+# calculated_metrics = {"wc": 0, "water": 0,}
+calculated_metrics = {}
 
 def log_chess_time(log_time):
     import json
@@ -311,7 +311,7 @@ if __name__ == "__main__":
                         import ezsheets
                         save_results_to_googlesheet(dailyResults, weekDay)
                         save_metrics_to_googlesheet(metrics, weekDay)
-                        time.sleep(60)
+                        time.sleep(30)
                         backup_tm_and_fm_reports(cwd)
 
                         if secondary_categories and ("Р", "chess") in secondary_categories:
