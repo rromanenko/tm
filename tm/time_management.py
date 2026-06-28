@@ -9,7 +9,7 @@ import time
 import zipfile
 
 ## false - off, anything else - on
-heavy_functions_toggle = True
+heavy_functions_toggle = False
 
 # choose what category to display
 #DISPLAY_BREAKDOWN = 'БB'
@@ -156,6 +156,8 @@ def get_path():
         return "/Volumes/untitled/"
     elif sys.platform == "win32":
         return "C:/Мои документы/"
+    elif sys.platform == "linux":
+        return "/home/new-user/Downloads/"
     else:
         print("Unknown platform:", sys.platform)
         exit()
@@ -302,7 +304,7 @@ if __name__ == "__main__":
                 except FileNotFoundError:
                     flag = True
 
-                if flag:
+                if flag and sys.platform != "linux":
                     create_backup(cwd, backup_file, personal_files)
                     print(f"{personal_files} zipped in {backup_file} at {cwd}, size {os.path.getsize(cwd+backup_file)}")
 
