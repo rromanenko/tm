@@ -2,7 +2,7 @@
 
 import os
 import pprint
-# import pyperclip
+import pyperclip
 import re
 import sys
 import time
@@ -33,8 +33,8 @@ WEEK_REPORTS_SHEET = "Week reports"
 
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
-personal_files = ["life.txt", "life2.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("exercises","palming"), (" wc",)]
+personal_files = ["life.txt", "life2.txt", "life3.txt", "life4.txt", "life5.txt", "План работы.txt", "Цели.txt"]
+metrics_list = [("tmyself",), ("some strength exercises",), (" wc",)]
 # calculated_metrics = {"wc": 0, "water": 0,}
 calculated_metrics = {}
 
@@ -285,9 +285,9 @@ if __name__ == "__main__":
                 # for this we search for patterns like 00.15 in clipboard
                 # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
                 # then we save daily result to clipboard
-                # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-                # if not mo or len(mo) != len(CATEGORIES_RU):
-                #     pyperclip.copy(dailyResults)
+                mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                if not mo or len(mo) != len(CATEGORIES_RU):
+                    pyperclip.copy(dailyResults)
 
                 # if backup zip is empty or doesn't exist or any file in this zip differs from files on disk,
                 # then zip the personal files
