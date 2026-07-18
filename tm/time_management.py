@@ -2,14 +2,16 @@
 
 import os
 import pprint
-import pyperclip
 import re
 import sys
 import time
 import zipfile
 
-## false - off, anything else - on
+# false - off, anything else - on
 heavy_functions_toggle = False
+
+# copy full day results to the clipping board or no?
+clipping_toggle = True
 
 # choose what category to display
 #DISPLAY_BREAKDOWN = 'БB'
@@ -281,13 +283,15 @@ if __name__ == "__main__":
             else:
                 print(Green + "Total:", f"{hours} h", White)
 
-                # here we check if clipboard already contains data similar to daily results
-                # for this we search for patterns like 00.15 in clipboard
-                # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
-                # then we save daily result to clipboard
-                mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-                if not mo or len(mo) != len(CATEGORIES_RU):
+                if clipping_toggle:
+                    import pyperclip
                     pyperclip.copy(dailyResults)
+                    # here we check if clipboard already contains data similar to daily results
+                    # for this we search for patterns like 00.15 in clipboard
+                    # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
+                    # then we save daily result to clipboard
+                    # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                    # if not mo or len(mo) != len(CATEGORIES_RU):
 
                 # if backup zip is empty or doesn't exist or any file in this zip differs from files on disk,
                 # then zip the personal files
