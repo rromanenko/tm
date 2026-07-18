@@ -13,6 +13,9 @@ heavy_functions_toggle = False
 # copy full day results to the clipping board or no?
 clipping_toggle = True
 
+# backup personal files or no?
+backup_toggle = True
+
 # choose what category to display
 #DISPLAY_BREAKDOWN = 'БB'
 DISPLAY_BREAKDOWN = 'ХN'
@@ -39,6 +42,47 @@ personal_files = ["life.txt", "life2.txt", "life3.txt", "life4.txt", "life5.txt"
 metrics_list = [("tmyself",), ("some strength exercises",), (" wc",)]
 # calculated_metrics = {"wc": 0, "water": 0,}
 calculated_metrics = {}
+
+
+def create_backup(backup_path, backup_file, file_list):
+    zip_path = os.path.join(backup_path, backup_file)
+    
+    # 1. Filter the list to only include files that actually exist on this computer
+    existing_files = [f for f in file_list if os.path.exists(os.path.join(backup_path, f))]
+    
+    needs_update = True
+    
+    # 2. Check if the zip exists and if its contents match the files on disk
+    if os.path.exists(zip_path):
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as backup_zip:
+                zip_contents = backup_zip.namelist()
+                
+                # Check if the exact same files are in the zip, and compare their sizes
+                if set(zip_contents) == set(existing_files):
+                    needs_update = False  # Assume up-to-date unless a size differs
+                    for f in existing_files:
+                        disk_size = os.path.getsize(os.path.join(backup_path, f))
+                        zip_size = backup_zip.getinfo(f).file_size
+                        
+                        if disk_size != zip_size:
+                            needs_update = True
+                            break
+        except (zipfile.BadZipFile, KeyError):
+            needs_update = True # Recreate if the zip is corrupted
+
+    # 3. Create or overwrite the backup if changes were detected
+    if needs_update:
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as backup_zip:
+            for f in existing_files:
+                # arcname ensures we only save the filename in the zip, not the full path
+                backup_zip.write(os.path.join(backup_path, f), arcname=f)
+                
+        zip_size = os.path.getsize(zip_path)
+        print(f"{len(existing_files)} files zipped in {backup_file} at {backup_path}, size {zip_size} bytes.")
+    else:
+        print(f"No changes detected. {backup_file} is already up to date.")
+
 
 def log_chess_time(log_time):
     import json
@@ -165,14 +209,6 @@ def get_path():
         exit()
 
 
-def create_backup(backup_path, backup_file, file_list):
-    backup = zipfile.ZipFile(backup_path + backup_file, "w")
-    for f in file_list:
-        # backup.write(backup_path + f, compress_type=zipfile.ZIP_DEFLATED)
-        backup.write(backup_path + f)
-    backup.close()
-
-
 if __name__ == "__main__":
 
     # get current working directory depending on if we are on mac or windows
@@ -293,24 +329,8 @@ if __name__ == "__main__":
                     # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
                     # if not mo or len(mo) != len(CATEGORIES_RU):
 
-                # if backup zip is empty or doesn't exist or any file in this zip differs from files on disk,
-                # then zip the personal files
-                flag = False
-                try:
-                    backupZip = zipfile.ZipFile(cwd + backup_file)
-                    if not backupZip.namelist():
-                        flag = True
-
-                    for file in backupZip.namelist():
-                        if os.path.getsize("/" + file) != backupZip.getinfo(file).file_size:
-                            flag = True
-                            break
-                except FileNotFoundError:
-                    flag = True
-
-                if flag and sys.platform != "linux":
+                if backup_toggle:
                     create_backup(cwd, backup_file, personal_files)
-                    print(f"{personal_files} zipped in {backup_file} at {cwd}, size {os.path.getsize(cwd+backup_file)}")
 
                 if heavy_functions_toggle:
                     try:
