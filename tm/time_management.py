@@ -79,9 +79,9 @@ def create_backup(backup_path, backup_file, file_list):
                 backup_zip.write(os.path.join(backup_path, f), arcname=f)
                 
         zip_size = os.path.getsize(zip_path)
-        print(f"{len(existing_files)} files zipped in {backup_file} at {backup_path}, size {zip_size} bytes.")
+        print(f"{len(existing_files)} files zipped in {backup_file} at {backup_path}, size {zip_size} bytes. {White}")
     else:
-        print(f"No changes detected. {backup_file} is already up to date.")
+        print(f"No changes detected. {backup_file} is already up to date. {White}")
 
 
 def log_chess_time(log_time):
@@ -319,16 +319,6 @@ if __name__ == "__main__":
             else:
                 print(Green + "Total:", f"{hours} h", White)
 
-                if clipping_toggle:
-                    import pyperclip
-                    pyperclip.copy(dailyResults)
-                    # here we check if clipboard already contains data similar to daily results
-                    # for this we search for patterns like 00.15 in clipboard
-                    # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
-                    # then we save daily result to clipboard
-                    # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
-                    # if not mo or len(mo) != len(CATEGORIES_RU):
-
                 if backup_toggle:
                     create_backup(cwd, backup_file, personal_files)
 
@@ -350,10 +340,21 @@ if __name__ == "__main__":
 
             print(Purple + "Metrics:", metrics, White)
             if secondary_categories:
-                print(Orange, end="")
+                print(Orange + " ", end="")
                 pprint.pprint(secondary_categories)
                 print(White)
             # print(Purple+"Calories for the day:", total_cal, sum(total_cal))
+
+            if clipping_toggle and (hours, minutes) == (24, 0):
+                sys.stdout.flush()
+                import pyperclip
+                pyperclip.copy(dailyResults)
+                    # here we check if clipboard already contains data similar to daily results
+                    # for this we search for patterns like 00.15 in clipboard
+                    # if there are no such patterns in clipboard, or # of them doesn't equal to # of categories
+                    # then we save daily result to clipboard
+                    # mo = re.compile(r'\d+.\d+').findall(pyperclip.paste())
+                    # if not mo or len(mo) != len(CATEGORIES_RU):
 
             in_date = False
 
