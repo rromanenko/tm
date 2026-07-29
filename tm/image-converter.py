@@ -3,8 +3,8 @@ from PIL import Image
 import pillow_avif  # This automatically enables AVIF support in Pillow
 
 # --- Configuration ---
-BASE_DIR = r"/home/new-user/Music" 
-IGNORED_EXTENSIONS = ["txt", "sh", "mp3"] 
+BASE_DIR = r"C:\Downloads\jpg "
+IGNORED_EXTENSIONS = ["jpg", "jpeg", "mp4", "png", "mov"]
 # ---------------------
 
 def convert_webp_to_jpg(file_path):
