@@ -1,11 +1,30 @@
 import os
+import platform
 from PIL import Image
 import pillow_avif  # This automatically enables AVIF support in Pillow
 
 # --- Configuration ---
-BASE_DIR = r"C:\Downloads\jpg "
+WINDOWS_BASE_DIR = r"C:\Downloads\jpg"
+LINUX_BASE_DIR = os.path.expanduser("~/Pictures/")
+
 IGNORED_EXTENSIONS = ["jpg", "jpeg", "mp4", "png", "mov"]
 # ---------------------
+
+
+def get_base_directory():
+    """Returns the base directory configured for the current platform."""
+    current_platform = platform.system()
+
+    if current_platform == "Windows":
+        return WINDOWS_BASE_DIR
+
+    if current_platform == "Linux":
+        return LINUX_BASE_DIR
+
+    raise RuntimeError(
+        f"Unsupported operating system: {current_platform}. "
+        "Only Windows and Linux are supported."
+    )
 
 def convert_webp_to_jpg(file_path):
     """Converts a WebP image to JPG and saves it in the same directory."""
@@ -66,5 +85,10 @@ def scan_files(base_dir, ignored_exts):
                 elif ext_clean == "avif":
                     convert_avif_to_jpg(full_path)
 
+
 if __name__ == "__main__":
-    scan_files(BASE_DIR, IGNORED_EXTENSIONS)
+    try:
+        base_directory = get_base_directory()
+        scan_files(base_directory, IGNORED_EXTENSIONS)
+    except RuntimeError as error:
+        print(f"Error: {error}")
