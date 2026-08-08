@@ -7,24 +7,6 @@ BASE_DIR = r"C:\Downloads\jpg "
 IGNORED_EXTENSIONS = ["jpg", "jpeg", "mp4", "png", "mov"]
 # ---------------------
 
-def convert_webp_to_jpg(file_path):
-    """Converts a WebP image to JPG and saves it in the same directory."""
-    try:
-        with Image.open(file_path) as img:
-            # JPG does not support transparency (Alpha channel). 
-            # We must convert the image to standard RGB.
-            rgb_img = img.convert("RGB")
-            
-            # Create the new filename by replacing the extension
-            base_name = os.path.splitext(file_path)[0]
-            new_file_path = f"{base_name}.jpg"
-            
-            rgb_img.save(new_file_path, "JPEG")
-            print(f"  [+] Successfully converted WEBP to: {new_file_path}")
-            
-    except Exception as e:
-        print(f"  [!] Error converting WEBP '{file_path}': {e}")
-
 def convert_avif_to_jpg(file_path):
     """Converts an AVIF image to JPG and saves it in the same directory."""
     try:
@@ -41,6 +23,42 @@ def convert_avif_to_jpg(file_path):
     except Exception as e:
         print(f"  [!] Error converting AVIF '{file_path}': {e}")
 
+def convert_jfif_to_jpg(file_path):
+    """Converts a JFIF image to JPG and saves it in the same directory."""
+    try:
+        with Image.open(file_path) as img:
+            # JPG uses RGB format.
+            rgb_img = img.convert("RGB")
+
+            # Create the new filename by replacing the extension
+            base_name = os.path.splitext(file_path)[0]
+            new_file_path = f"{base_name}.jpg"
+
+            rgb_img.save(new_file_path, "JPEG")
+            print(f"  [+] Successfully converted JFIF to: {new_file_path}")
+
+    except Exception as e:
+        print(f"  [-] Error converting JFIF file {file_path}: {e}")
+        return None
+
+
+def convert_webp_to_jpg(file_path):
+    """Converts a WebP image to JPG and saves it in the same directory."""
+    try:
+        with Image.open(file_path) as img:
+            # JPG does not support transparency (Alpha channel).
+            # We must convert the image to standard RGB.
+            rgb_img = img.convert("RGB")
+
+            # Create the new filename by replacing the extension
+            base_name = os.path.splitext(file_path)[0]
+            new_file_path = f"{base_name}.jpg"
+
+            rgb_img.save(new_file_path, "JPEG")
+            print(f"  [+] Successfully converted WEBP to: {new_file_path}")
+
+    except Exception as e:
+        print(f"  [!] Error converting WEBP '{file_path}': {e}")
 
 def scan_files(base_dir, ignored_exts):
     ignored_set = {ext.lower() for ext in ignored_exts}
@@ -65,6 +83,8 @@ def scan_files(base_dir, ignored_exts):
                     convert_webp_to_jpg(full_path)
                 elif ext_clean == "avif":
                     convert_avif_to_jpg(full_path)
+                elif ext_clean == "jfif":
+                    convert_jfif_to_jpg(full_path)
 
 if __name__ == "__main__":
     scan_files(BASE_DIR, IGNORED_EXTENSIONS)
