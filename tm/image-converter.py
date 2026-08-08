@@ -10,7 +10,6 @@ LINUX_BASE_DIR = os.path.expanduser("~/Pictures/")
 IGNORED_EXTENSIONS = ["jpg", "jpeg", "mp4", "png", "mov"]
 # ---------------------
 
-
 def get_base_directory():
     """Returns the base directory configured for the current platform."""
     current_platform = platform.system()
@@ -26,59 +25,27 @@ def get_base_directory():
         "Only Windows and Linux are supported."
     )
 
-def convert_avif_to_jpg(file_path):
-    """Converts an AVIF image to JPG and saves it in the same directory."""
+def convert_to_jpg(file_path):
+    """Converts a supported image format to JPG and saves it in the same directory."""
     try:
         with Image.open(file_path) as img:
-            # Convert to RGB to strip any transparency
+            # Convert to RGB because JPEG does not support transparency.
             rgb_img = img.convert("RGB")
 
+            # Create the new filename by replacing the original extension with .jpg
             base_name = os.path.splitext(file_path)[0]
             new_file_path = f"{base_name}.jpg"
 
+            # Save as JPEG
             rgb_img.save(new_file_path, "JPEG")
-            print(f"  [+] Successfully converted AVIF to: {new_file_path}")
+
+            # Get the original file extension for the log message
+            original_format = os.path.splitext(file_path)[1].lstrip(".").upper()
+
+            print(f"  [+] Successfully converted {original_format} to: {new_file_path}")
 
     except Exception as e:
-        print(f"  [!] Error converting AVIF '{file_path}': {e}")
-
-def convert_jfif_to_jpg(file_path):
-    """Converts a JFIF image to JPG and saves it in the same directory."""
-    try:
-        with Image.open(file_path) as img:
-            # JPG uses RGB format.
-            rgb_img = img.convert("RGB")
-
-            # Create the new filename by replacing the extension
-            base_name = os.path.splitext(file_path)[0]
-            new_file_path = f"{base_name}.jpg"
-
-            rgb_img.save(new_file_path, "JPEG")
-            print(f"  [+] Successfully converted JFIF to: {new_file_path}")
-
-    except Exception as e:
-        print(f"  [-] Error converting JFIF file {file_path}: {e}")
-        return None
-
-def convert_webp_to_jpg(file_path):
-    """Converts a WebP image to JPG and saves it in the same directory."""
-    try:
-        with Image.open(file_path) as img:
-            # JPG does not support transparency (Alpha channel). 
-            # We must convert the image to standard RGB.
-            rgb_img = img.convert("RGB")
-            
-            # Create the new filename by replacing the extension
-            base_name = os.path.splitext(file_path)[0]
-            new_file_path = f"{base_name}.jpg"
-            
-            rgb_img.save(new_file_path, "JPEG")
-            print(f"  [+] Successfully converted WEBP to: {new_file_path}")
-            
-    except Exception as e:
-        print(f"  [!] Error converting WEBP '{file_path}': {e}")
-
-
+        print(f"  [!] Error converting '{file_path}': {e}")
 
 def scan_files(base_dir, ignored_exts):
     ignored_set = {ext.lower() for ext in ignored_exts}
@@ -97,15 +64,10 @@ def scan_files(base_dir, ignored_exts):
             if ext_clean not in ignored_set:
                 full_path = os.path.join(root, filename)
                 print(full_path)
-                
-                # Check for conversion triggers
-                if ext_clean == "webp":
-                    convert_webp_to_jpg(full_path)
-                elif ext_clean == "avif":
-                    convert_avif_to_jpg(full_path)
-                elif ext_clean == "jfif":
-                    convert_jfif_to_jpg(full_path)
 
+            # Check for conversion triggers
+            if ext_clean in {"webp", "avif", "jfif"}:
+                convert_to_jpg(full_path)
 
 if __name__ == "__main__":
     try:
