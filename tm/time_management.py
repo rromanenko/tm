@@ -39,7 +39,7 @@ WEEK_REPORTS_SHEET = "Week reports"
 workplan = "План работы.txt"
 backup_file = "personalBackup.zip"
 personal_files = ["life.txt", "life2.txt", "life3.txt", "life4.txt", "План работы.txt", "Цели.txt"]
-metrics_list = [("tmyself",), ("splits training",), (" wc",)]
+metrics_list = [("tmyself",), ("some strength exercises",), (" wc",)]
 # calculated_metrics = {"wc": 0, "water": 0,}
 calculated_metrics = {}
 
